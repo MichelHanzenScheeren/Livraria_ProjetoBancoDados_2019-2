@@ -1,0 +1,47 @@
+﻿@model LivrariaMHS.Models.Attributes.Cliente
+@using LivrariaMHS.Models.Enums
+
+@{
+    ViewData["Title"] = "NOVO CLIENTE";
+}
+
+<p><h1>@ViewData["Title"]</h1></p>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label"></label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sexo" class="control-label"></label>
+                <select asp-for="Sexo" placeholder="Selecione" asp-items="Html.GetEnumSelectList<Sexo>()" class="form-control"><option class="text-secondary" value="" disabled selected hidden>Selecione...</option></select>
+                <span asp-validation-for="Sexo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CPF" class="control-label"></label>
+                <input asp-for="CPF" class="form-control" data-mask="000.000.000-00"/>
+                <span asp-validation-for="CPF" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-success btn-lg" /> &ensp;
+                <a asp-action="Index" class="btn btn-info btn-lg">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts 
+{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
