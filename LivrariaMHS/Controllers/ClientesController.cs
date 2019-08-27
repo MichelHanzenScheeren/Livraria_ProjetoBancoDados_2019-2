@@ -7,147 +7,174 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LivrariaMHS.Models;
 using LivrariaMHS.Models.Attributes;
+using LivrariaMHS.Models.Service;
+using System.Diagnostics;
 
 namespace LivrariaMHS.Controllers
 {
     public class ClientesController : Controller
     {
         private readonly LivrariaMHSContext _context;
+        private readonly ClienteServico _clienteServico;
+        private readonly RuaServico _ruaServico;
+        private readonly BairroServico _bairroServico;
+        private readonly CidadeServico _cidadeServico;
 
-        public ClientesController(LivrariaMHSContext context)
+        public ClientesController(LivrariaMHSContext context, ClienteServico clienteServico, 
+            RuaServico ruaServico, BairroServico bairroServico, CidadeServico cidadeServico)
         {
             _context = context;
+            _clienteServico = clienteServico;
+            _ruaServico = ruaServico;
+            _bairroServico = bairroServico;
+            _cidadeServico = cidadeServico;
         }
 
-        // GET: Clientes
         public async Task<IActionResult> Index()
         {
             return View(await _context.Cliente.ToListAsync());
         }
 
-        // GET: Clientes/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var cliente = await _context.Cliente
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
-
-            return View(cliente);
-        }
-
-        // GET: Clientes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Clientes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome,Sexo,Email,CPF")] Cliente cliente)
+        public async Task<IActionResult> Create(Cliente cliente)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(cliente);
+
+            await VerificarEndereco(cliente);
+
+            await _clienteServico.InsertAsync(cliente);
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task VerificarEndereco(Cliente cliente)
+        {
+            var rua = await _ruaServico.FindFirstAsync(x => x.Nome == cliente.Rua.Nome);
+            if (rua == null)
             {
-                _context.Add(cliente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await _ruaServico.InsertAsync(cliente.Rua);
+                cliente.RuaID = (await _ruaServico.LastAsync()).ID;
             }
+            else
+                cliente.RuaID = rua.ID;
+
+            var bairro = await _bairroServico.FindFirstAsync(x => x.Nome == cliente.Bairro.Nome);
+            if (bairro == null)
+            {
+                await _bairroServico.InsertAsync(cliente.Bairro);
+                cliente.BairroID = (await _bairroServico.LastAsync()).ID;
+            }
+            else
+                cliente.BairroID = bairro.ID;
+
+            var cidade = await _cidadeServico.FindFirstAsync(x => x.Nome == cliente.Cidade.Nome && x.Estado == cliente.Cidade.Estado);
+            if (cidade == null)
+            {
+                await _cidadeServico.InsertAsync(cliente.Cidade);
+                cliente.CidadeID = (await _cidadeServico.LastAsync()).ID;
+            }
+            else
+                cliente.CidadeID = cidade.ID;
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return RedirectToAction(nameof(Error), new { message = "Cliente Inválido!" });
+
+            var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
+
+            if (cliente == null)
+                return RedirectToAction(nameof(Error), new { message = "Cliente não encontrado!" });
+
             return View(cliente);
         }
 
-        // GET: Clientes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
-                return NotFound();
-            }
+                return RedirectToAction(nameof(Error), new { message = "Cliente Inválido!" });
 
-            var cliente = await _context.Cliente.FindAsync(id);
+            var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
+
             if (cliente == null)
-            {
-                return NotFound();
-            }
+                return RedirectToAction(nameof(Error), new { message = "Cliente não encontrado!" });
+
             return View(cliente);
         }
 
-        // POST: Clientes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,Sexo,Email,CPF")] Cliente cliente)
+        public async Task<IActionResult> Edit(int id, Cliente cliente)
         {
-            if (id != cliente.ID)
-            {
-                return NotFound();
-            }
+            if (!ModelState.IsValid)
+                return View(cliente);
 
-            if (ModelState.IsValid)
+            if (id != cliente.ID)
+                return RedirectToAction(nameof(Error), new { message = "O ID Informado não corresponde ao ID do cliente!" });
+
+            try
             {
-                try
-                {
-                    _context.Update(cliente);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClienteExists(cliente.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await VerificarEndereco(cliente);
+                await _clienteServico.UpdateAsync(cliente);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(cliente);
+            catch (ApplicationException erro)
+            {
+                return RedirectToAction(nameof(Error), new { message = erro.Message });
+            }
         }
 
-        // GET: Clientes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
-                return NotFound();
-            }
+                return RedirectToAction(nameof(Error), new { message = "ID Inválido!" });
 
-            var cliente = await _context.Cliente
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
+
             if (cliente == null)
-            {
-                return NotFound();
-            }
+                return RedirectToAction(nameof(Error), new { message = "Cliente não encontrado!" });
 
             return View(cliente);
         }
 
-        // POST: Clientes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cliente = await _context.Cliente.FindAsync(id);
-            _context.Cliente.Remove(cliente);
-            await _context.SaveChangesAsync();
+            var cliente = await _clienteServico.FindFirstAsync(x => x.ID == id);
+            await _clienteServico.RemoveAsync(cliente);
+            await ValidarEnderecos(cliente.RuaID, cliente.BairroID, cliente.CidadeID);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ClienteExists(int id)
+        public IActionResult Error(string message)
         {
-            return _context.Cliente.Any(e => e.ID == id);
+            var viewModelError = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModelError);
+        }
+
+        private async Task ValidarEnderecos(int idRua, int idBairro, int idCidade)
+        {
+            if (!(await _clienteServico.ExistAsync(x => x.RuaID == idRua)))
+                await _ruaServico.RemoveAsync(await _ruaServico.FindFirstAsync(x => x.ID == idRua));
+
+            if (!(await _clienteServico.ExistAsync(x => x.BairroID == idBairro)))
+                await _bairroServico.RemoveAsync(await _bairroServico.FindFirstAsync(x => x.ID == idBairro));
+
+            if (!(await _clienteServico.ExistAsync(x => x.CidadeID == idCidade)))
+                await _cidadeServico.RemoveAsync(await _cidadeServico.FindFirstAsync(x => x.ID == idCidade));
         }
     }
 }

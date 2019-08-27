@@ -41,6 +41,9 @@ namespace LivrariaMHS
                     options.UseSqlServer(Configuration.GetConnectionString("LivrariaMHSContext")));
 
             services.AddScoped<ClienteServico>();
+            services.AddScoped<CidadeServico>();
+            services.AddScoped<BairroServico>();
+            services.AddScoped<RuaServico>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
