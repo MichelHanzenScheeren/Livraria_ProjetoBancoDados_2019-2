@@ -30,10 +30,16 @@ namespace LivrariaMHS.Models.Attributes
         public string CPF { get; set; }
 
         [Required(ErrorMessage = "Preenchimento obrigatório!")]
-        [DataType(DataType.Date)]
+        [DataType(DataType.Date, ErrorMessage = "Data inválida!")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [Display(Name = "Data de Nascimento")]
         public DateTime DataNascimento { get; set; }
+
+        [Display(Name = "Celular")]
+        [Required(ErrorMessage = "Preenchimento obrigatório!")]
+        [Phone(ErrorMessage = "Telefone Inválido!")]
+        [StringLength(14, MinimumLength = 13, ErrorMessage = "Numero inváido!")]
+        public string Telefone { get; set; }
 
         // ENDEREÇO
         [Required(ErrorMessage = "Preenchimento obrigatório!")]

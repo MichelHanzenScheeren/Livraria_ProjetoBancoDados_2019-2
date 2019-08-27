@@ -14,16 +14,14 @@ namespace LivrariaMHS.Controllers
 {
     public class ClientesController : Controller
     {
-        private readonly LivrariaMHSContext _context;
         private readonly ClienteServico _clienteServico;
         private readonly RuaServico _ruaServico;
         private readonly BairroServico _bairroServico;
         private readonly CidadeServico _cidadeServico;
 
-        public ClientesController(LivrariaMHSContext context, ClienteServico clienteServico, 
+        public ClientesController(ClienteServico clienteServico, 
             RuaServico ruaServico, BairroServico bairroServico, CidadeServico cidadeServico)
         {
-            _context = context;
             _clienteServico = clienteServico;
             _ruaServico = ruaServico;
             _bairroServico = bairroServico;
@@ -32,7 +30,7 @@ namespace LivrariaMHS.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cliente.ToListAsync());
+            return View(await _clienteServico.GetAllAsync());
         }
 
         public IActionResult Create()

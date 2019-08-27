@@ -12,6 +12,7 @@ namespace LivrariaMHS.Models.Attributes
         [StringLength(70, MinimumLength = 3, ErrorMessage = "{0} deve ter entre 10 e 70 caracteres!")]
         public string Nome { get; set; }
 
+        [Display(Name = "Estado (sigla)")]
         [Required(ErrorMessage = "Preenchimento obrigatório!")]
         [StringLength(2, MinimumLength = 2, ErrorMessage = "{0} inválido!")]
         public string Estado { get; set; }
