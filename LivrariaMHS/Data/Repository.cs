@@ -80,9 +80,19 @@ namespace LivrariaMHS.Data
             return await _context.Set<T>().LastAsync();
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync(params string[] incluir)
         {
-            return await _context.Set<T>().ToListAsync();
+            if(incluir.Length != 0)
+            {
+                var pesquisa = _context.Set<T>().Include(incluir[0]);
+                for (int i = 1; i < incluir.Length; i++)
+                {
+                    pesquisa = pesquisa.Include(incluir[i]);
+                }
+                return await pesquisa.ToListAsync();
+            }
+            else
+                return await _context.Set<T>().ToListAsync();
         }
 
         public DbSet<T> Select()

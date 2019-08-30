@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,13 +32,14 @@ namespace LivrariaMHS
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<LivrariaMHSContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("LivrariaMHSContext")));
+            services.AddDbContext<LivrariaMHSContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LivrariaMHSContext")));
 
             services.AddScoped<ClienteServico>();
             services.AddScoped<CidadeServico>();
             services.AddScoped<BairroServico>();
             services.AddScoped<RuaServico>();
+            services.AddScoped<LivroServico>();
+            services.AddScoped<AutorServico>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

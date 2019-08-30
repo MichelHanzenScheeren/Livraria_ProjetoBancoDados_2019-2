@@ -153,16 +153,6 @@ namespace LivrariaMHS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Error(string message)
-        {
-            var viewModelError = new ErrorViewModel
-            {
-                Message = message,
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            };
-            return View(viewModelError);
-        }
-
         private async Task ValidarEnderecos(int idRua, int idBairro, int idCidade)
         {
             if (!(await _clienteServico.ExistAsync(x => x.RuaID == idRua)))
@@ -173,6 +163,16 @@ namespace LivrariaMHS.Controllers
 
             if (!(await _clienteServico.ExistAsync(x => x.CidadeID == idCidade)))
                 await _cidadeServico.RemoveAsync(await _cidadeServico.FindFirstAsync(x => x.ID == idCidade));
+        }
+
+        public IActionResult Error(string message)
+        {
+            var viewModelError = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModelError);
         }
     }
 }

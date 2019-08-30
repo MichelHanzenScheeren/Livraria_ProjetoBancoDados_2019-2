@@ -7,8 +7,6 @@
 <p><h1>@ViewData["Title"]</h1></p>
 <p> <a asp-action="Create" class="btn btn-outline-success mr-sm-5 col-2">Novo</a> </p>
 
-
-
 <table class="table table-hover">
     <thead class="table-primary" >
         <tr>
@@ -33,28 +31,28 @@
     <tbody class="table-dark">
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sexo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CPF)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID" class="badge badge-pill badge-info">Editar</a> /
-                <a asp-action="Details" asp-route-id="@item.ID" class="badge badge-pill badge-info">Detalhes</a> /
-                <a asp-action="Delete" asp-route-id="@item.ID" class="badge badge-pill badge-info">Deletar</a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sexo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CPF)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="badge badge-pill badge-info">Editar</a> /
+                    <a asp-action="Details" asp-route-id="@item.ID" class="badge badge-pill badge-info">Detalhes</a> /
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="badge badge-pill badge-info">Deletar</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

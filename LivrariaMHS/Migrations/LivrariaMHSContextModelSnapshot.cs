@@ -19,6 +19,21 @@ namespace LivrariaMHS.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("LivrariaMHS.Models.Attributes.Autor", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(70);
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Autores");
+                });
+
             modelBuilder.Entity("LivrariaMHS.Models.Attributes.Bairro", b =>
                 {
                     b.Property<int>("ID")
@@ -31,7 +46,7 @@ namespace LivrariaMHS.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Bairro");
+                    b.ToTable("Bairros");
                 });
 
             modelBuilder.Entity("LivrariaMHS.Models.Attributes.Cidade", b =>
@@ -50,7 +65,7 @@ namespace LivrariaMHS.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Cidade");
+                    b.ToTable("Cidades");
                 });
 
             modelBuilder.Entity("LivrariaMHS.Models.Attributes.Cliente", b =>
@@ -86,7 +101,7 @@ namespace LivrariaMHS.Migrations
 
                     b.Property<string>("Telefone")
                         .IsRequired()
-                        .HasMaxLength(20);
+                        .HasMaxLength(14);
 
                     b.HasKey("ID");
 
@@ -96,7 +111,34 @@ namespace LivrariaMHS.Migrations
 
                     b.HasIndex("RuaID");
 
-                    b.ToTable("Cliente");
+                    b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("LivrariaMHS.Models.Attributes.Livro", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Ano");
+
+                    b.Property<int>("AutorID");
+
+                    b.Property<int>("Edicao");
+
+                    b.Property<int>("Paginas");
+
+                    b.Property<double>("Preco");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(70);
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AutorID");
+
+                    b.ToTable("Livros");
                 });
 
             modelBuilder.Entity("LivrariaMHS.Models.Attributes.Rua", b =>
@@ -111,7 +153,7 @@ namespace LivrariaMHS.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Rua");
+                    b.ToTable("Ruas");
                 });
 
             modelBuilder.Entity("LivrariaMHS.Models.Attributes.Cliente", b =>
@@ -129,6 +171,14 @@ namespace LivrariaMHS.Migrations
                     b.HasOne("LivrariaMHS.Models.Attributes.Rua", "Rua")
                         .WithMany()
                         .HasForeignKey("RuaID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LivrariaMHS.Models.Attributes.Livro", b =>
+                {
+                    b.HasOne("LivrariaMHS.Models.Attributes.Autor", "Autor")
+                        .WithMany("Livros")
+                        .HasForeignKey("AutorID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
