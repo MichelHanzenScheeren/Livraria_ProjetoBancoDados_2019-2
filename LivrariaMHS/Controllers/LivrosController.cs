@@ -10,6 +10,8 @@ using LivrariaMHS.Models.Attributes;
 using LivrariaMHS.Models.Service;
 using LivrariaMHS.Models.Excpetions;
 using System.Diagnostics;
+using LivrariaMHS.Models.ViewModels;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace LivrariaMHS.Controllers
 {
@@ -17,11 +19,15 @@ namespace LivrariaMHS.Controllers
     {
         private readonly LivroServico _livroServico;
         private readonly AutorServico _autorServico;
+        private readonly CategoriaServico _categoriaServico;
+        private readonly LivroCategoriaServico _livroCategoriaServico;
 
-        public LivrosController(LivroServico livroServico, AutorServico autorServico)
+        public LivrosController(LivroServico livroServico, AutorServico autorServico, CategoriaServico categoriaServico, LivroCategoriaServico livroCategoriaServico)
         {
             _livroServico = livroServico;
             _autorServico = autorServico;
+            _categoriaServico = categoriaServico;
+            _livroCategoriaServico = livroCategoriaServico;
         }
 
         public async Task<IActionResult> Index()
@@ -29,20 +35,37 @@ namespace LivrariaMHS.Controllers
             return View(await _livroServico.GetAllAsync("Autor"));
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var categorias = await _categoriaServico.GetAllAsync();
+            var viewModel = new LivroViewModel { Categorias = categorias };
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Livro livro)
+        public async Task<IActionResult> Create(Livro livro, int[] categoriasID)
         {
             if (!ModelState.IsValid)
-                return View(livro);
+                return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync()});
+
+            if (categoriasID.Length == 0)
+            {
+                TempData["CustomError"] = "Informe pelo menos uma categoria!";
+                ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
+                return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync() } );
+            }
 
             livro.AutorID = await VerificarCadastroAutor(livro);
             await _livroServico.InsertAsync(livro);
+            int idLivro = (await _livroServico.LastAsync()).ID;
+
+            foreach (var item in categoriasID)
+            {
+                LivroCategoria livroCategoria = new LivroCategoria() { LivroID = idLivro, CategoriaID = item };
+                await _livroCategoriaServico.InsertAsync(livroCategoria);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -62,7 +85,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro Inválido!" });
 
-            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor");
+            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias", "LivrosCategorias.Categoria");
             if (livro == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro não encontrado!" });
 
@@ -74,16 +97,20 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro Inválido!" });
 
-            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor");
+            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias");
             if (livro == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro não encontrado!" });
 
-            return View(livro);
+            var categorias = await _categoriaServico.GetAllAsync();
+            var selecionados = livro.LivrosCategorias.Select(x => x.CategoriaID);
+            ViewBag.categorias = new MultiSelectList(categorias, "ID","Nome", selecionados );
+
+            return View(new LivroViewModel() { Livro = livro, Categorias = categorias });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Livro livro)
+        public async Task<IActionResult> Edit(int id, Livro livro, int[] categoriasID)
         {
             if (!ModelState.IsValid)
                 return View(livro);
@@ -91,8 +118,18 @@ namespace LivrariaMHS.Controllers
             if (id != livro.ID)
                 return RedirectToAction(nameof(Error), new { message = "O ID Informado não corresponde ao ID do Livro!" });
 
+            if (categoriasID.Length == 0)
+            {
+                TempData["CustomError"] = "Informe pelo menos uma categoria!";
+                ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
+                var categorias = await _categoriaServico.GetAllAsync();
+                ViewBag.categorias = new MultiSelectList(categorias, "ID", "Nome");
+                return View(new LivroViewModel { Livro = livro, Categorias = categorias });
+            }
+
             try
             {
+                await VerificarAlteracoesCategorias(id, categoriasID);
                 livro.AutorID = await VerificarCadastroAutor(livro);
                 await _livroServico.UpdateAsync(livro);
                 return RedirectToAction(nameof(Index));
@@ -101,6 +138,27 @@ namespace LivrariaMHS.Controllers
             {
                 return RedirectToAction(nameof(Error), new { message = erro.Message });
             }
+        }
+
+        private async Task VerificarAlteracoesCategorias(int livroID, int[] categoriasID)
+        {
+            List<LivroCategoria> categorias = await _livroCategoriaServico.FindAsync(x => x.LivroID == livroID);
+            
+            foreach (var item in categoriasID)
+            {
+                
+                if (!(categorias.Exists(x => x.CategoriaID == item)))
+                {
+                    LivroCategoria novo = new LivroCategoria() { LivroID = livroID, CategoriaID = item };
+                    await _livroCategoriaServico.InsertAsync(novo);
+                }
+                categorias.RemoveAll(x => x.CategoriaID == item);
+            }
+            foreach (var item in categorias)
+            {
+                await _livroCategoriaServico.RemoveAsync(item);
+            }
+            
         }
 
         private async Task ValidarExistenciaAutor(string nome)
@@ -119,7 +177,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro Inválido!" });
 
-            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor");
+            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias", "LivrosCategorias.Categoria");
             if (livro == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro não encontrado!" });
 

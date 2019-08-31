@@ -9,6 +9,7 @@ namespace LivrariaMHS.Models.Attributes
         [Key]
         public int ID { get; set; }
 
+        [Display(Name = "Título")]
         [Required(ErrorMessage = "Preenchimento obrigatório!")]
         [StringLength(70, MinimumLength = 5, ErrorMessage = "{0} deve ter entre 5 e 70 caracteres!")]
         public string Titulo { get; set; }
@@ -38,6 +39,8 @@ namespace LivrariaMHS.Models.Attributes
         [Required]
         public int AutorID { get; set; }
         public virtual Autor Autor { get; set; }
+
+        public virtual List<LivroCategoria> LivrosCategorias { get; set; }
 
     }
 }

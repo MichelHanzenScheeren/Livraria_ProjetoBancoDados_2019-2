@@ -4,14 +4,16 @@ using LivrariaMHS.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LivrariaMHS.Migrations
 {
     [DbContext(typeof(LivrariaMHSContext))]
-    partial class LivrariaMHSContextModelSnapshot : ModelSnapshot
+    [Migration("20190830231854_AddCategorias")]
+    partial class AddCategorias
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,8 +141,6 @@ namespace LivrariaMHS.Migrations
 
                     b.Property<int>("AutorID");
 
-                    b.Property<int?>("CategoriaID");
-
                     b.Property<int>("Edicao");
 
                     b.Property<int>("Paginas");
@@ -155,28 +155,7 @@ namespace LivrariaMHS.Migrations
 
                     b.HasIndex("AutorID");
 
-                    b.HasIndex("CategoriaID");
-
                     b.ToTable("Livros");
-                });
-
-            modelBuilder.Entity("LivrariaMHS.Models.Attributes.LivroCategoria", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CategoriaID");
-
-                    b.Property<int>("LivroID");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("CategoriaID");
-
-                    b.HasIndex("LivroID");
-
-                    b.ToTable("LivroCategoria");
                 });
 
             modelBuilder.Entity("LivrariaMHS.Models.Attributes.Rua", b =>
@@ -217,23 +196,6 @@ namespace LivrariaMHS.Migrations
                     b.HasOne("LivrariaMHS.Models.Attributes.Autor", "Autor")
                         .WithMany("Livros")
                         .HasForeignKey("AutorID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LivrariaMHS.Models.Attributes.Categoria")
-                        .WithMany("Livros")
-                        .HasForeignKey("CategoriaID");
-                });
-
-            modelBuilder.Entity("LivrariaMHS.Models.Attributes.LivroCategoria", b =>
-                {
-                    b.HasOne("LivrariaMHS.Models.Attributes.Categoria", "Categoria")
-                        .WithMany("LivrosCategorias")
-                        .HasForeignKey("CategoriaID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LivrariaMHS.Models.Attributes.Livro", "Livro")
-                        .WithMany("LivrosCategorias")
-                        .HasForeignKey("LivroID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

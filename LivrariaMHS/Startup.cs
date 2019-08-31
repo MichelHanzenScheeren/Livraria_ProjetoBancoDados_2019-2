@@ -40,6 +40,8 @@ namespace LivrariaMHS
             services.AddScoped<RuaServico>();
             services.AddScoped<LivroServico>();
             services.AddScoped<AutorServico>();
+            services.AddScoped<CategoriaServico>();
+            services.AddScoped<LivroCategoriaServico>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

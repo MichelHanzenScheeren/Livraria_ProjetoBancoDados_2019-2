@@ -1,0 +1,24 @@
+﻿@model LivrariaMHS.Models.Attributes.Categoria
+
+@{
+    ViewData["Title"] = "DETALHES";
+}
+
+<p><h1>@ViewData["Title"]</h1></p>
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning btn-lg">Editar</a> &nbsp;
+    <a asp-action="Index" class="btn btn-info btn-lg">Voltar</a>
+</div>
