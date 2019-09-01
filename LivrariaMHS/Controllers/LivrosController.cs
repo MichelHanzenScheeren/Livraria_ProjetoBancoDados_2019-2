@@ -32,14 +32,12 @@ namespace LivrariaMHS.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _livroServico.GetAllAsync("Autor"));
+            return View((await _livroServico.GetAllAsync("Autor")).OrderBy(x => x.Titulo));
         }
 
         public async Task<IActionResult> Create()
         {
-            var categorias = await _categoriaServico.GetAllAsync();
-            var viewModel = new LivroViewModel { Categorias = categorias };
-            return View(viewModel);
+            return View(new LivroViewModel { Categorias = await _categoriaServico.GetAllAsync() });
         }
 
         [HttpPost]
@@ -56,10 +54,10 @@ namespace LivrariaMHS.Controllers
                 return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync() } );
             }
 
-            livro.AutorID = await VerificarCadastroAutor(livro);
+            await VerificarCadastroAutor(livro);
             await _livroServico.InsertAsync(livro);
-            int idLivro = (await _livroServico.LastAsync()).ID;
 
+            int idLivro = (await _livroServico.LastAsync()).ID;
             foreach (var item in categoriasID)
             {
                 LivroCategoria livroCategoria = new LivroCategoria() { LivroID = idLivro, CategoriaID = item };
@@ -69,7 +67,7 @@ namespace LivrariaMHS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<int> VerificarCadastroAutor(Livro livro)
+        private async Task VerificarCadastroAutor(Livro livro)
         {
             Autor autor = await _autorServico.FindFirstAsync(x => x.Nome == livro.Autor.Nome);
             if (autor is null)
@@ -77,7 +75,7 @@ namespace LivrariaMHS.Controllers
                 await _autorServico.InsertAsync(livro.Autor);
                 autor = await _autorServico.LastAsync();
             }
-            return autor.ID;
+            livro.AutorID = autor.ID;
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -86,6 +84,7 @@ namespace LivrariaMHS.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Livro Inválido!" });
 
             var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias", "LivrosCategorias.Categoria");
+
             if (livro == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro não encontrado!" });
 
@@ -113,7 +112,7 @@ namespace LivrariaMHS.Controllers
         public async Task<IActionResult> Edit(int id, Livro livro, int[] categoriasID)
         {
             if (!ModelState.IsValid)
-                return View(livro);
+                return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync() });
 
             if (id != livro.ID)
                 return RedirectToAction(nameof(Error), new { message = "O ID Informado não corresponde ao ID do Livro!" });
@@ -124,14 +123,16 @@ namespace LivrariaMHS.Controllers
                 ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
                 var categorias = await _categoriaServico.GetAllAsync();
                 ViewBag.categorias = new MultiSelectList(categorias, "ID", "Nome");
+                livro.AutorID = Convert.ToInt32(Request.Form["autorAntigoID"]);
                 return View(new LivroViewModel { Livro = livro, Categorias = categorias });
             }
 
             try
             {
                 await VerificarAlteracoesCategorias(id, categoriasID);
-                livro.AutorID = await VerificarCadastroAutor(livro);
+                await VerificarCadastroAutor(livro);
                 await _livroServico.UpdateAsync(livro);
+                await ValidarExistenciaAutor(Convert.ToInt32(Request.Form["autorAntigoID"]));
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException erro)
@@ -142,34 +143,31 @@ namespace LivrariaMHS.Controllers
 
         private async Task VerificarAlteracoesCategorias(int livroID, int[] categoriasID)
         {
-            List<LivroCategoria> categorias = await _livroCategoriaServico.FindAsync(x => x.LivroID == livroID);
+            List<LivroCategoria> livrosCategorias = await _livroCategoriaServico.FindAsync(x => x.LivroID == livroID);
             
             foreach (var item in categoriasID)
             {
                 
-                if (!(categorias.Exists(x => x.CategoriaID == item)))
+                if (!(livrosCategorias.Exists(x => x.CategoriaID == item)))
                 {
                     LivroCategoria novo = new LivroCategoria() { LivroID = livroID, CategoriaID = item };
                     await _livroCategoriaServico.InsertAsync(novo);
                 }
-                categorias.RemoveAll(x => x.CategoriaID == item);
+                else
+                    livrosCategorias.RemoveAll(x => x.CategoriaID == item);
             }
-            foreach (var item in categorias)
+            foreach (var item in livrosCategorias)
             {
                 await _livroCategoriaServico.RemoveAsync(item);
             }
             
         }
 
-        private async Task ValidarExistenciaAutor(string nome)
+        private async Task ValidarExistenciaAutor(int idAutor)
         {
-            Autor autor = await _autorServico.FindFirstAsync(x => x.Nome == nome);
-            if (autor != null)
-            {
-                if (!(await _livroServico.ExistAsync(x => x.AutorID == autor.ID)))
-                    await _autorServico.RemoveAsync(autor);
-            }
-             
+            
+            if (!(await _livroServico.ExistAsync(x => x.AutorID == idAutor)))
+                await _autorServico.RemoveAsync(await _autorServico.FindByIdAsync(x => x.ID == idAutor)); 
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -188,12 +186,11 @@ namespace LivrariaMHS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-           var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor");
+           var livro = await _livroServico.FindByIdAsync(x => x.ID == id);
             try
             {
-                string autor = livro.Autor.Nome;
                 await _livroServico.RemoveAsync(livro);
-                await ValidarExistenciaAutor(autor);
+                await ValidarExistenciaAutor(livro.AutorID);
                 return RedirectToAction(nameof(Index));
             }
             catch (IntegrityException)

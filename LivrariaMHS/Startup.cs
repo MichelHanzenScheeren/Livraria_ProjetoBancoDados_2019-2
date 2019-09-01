@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using LivrariaMHS.Models;
 using LivrariaMHS.Models.Service;
+using System.Globalization;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Localization;
 
 namespace LivrariaMHS
 {
@@ -42,11 +45,22 @@ namespace LivrariaMHS
             services.AddScoped<AutorServico>();
             services.AddScoped<CategoriaServico>();
             services.AddScoped<LivroCategoriaServico>();
+            services.AddScoped<VendaServico>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var brasil = new CultureInfo("pt-BR");
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(brasil),
+                SupportedCultures = new List<CultureInfo> { brasil },
+                SupportedUICultures = new List<CultureInfo> { brasil }
+            };
+            app.UseRequestLocalization(localizationOptions);
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using LivrariaMHS.Models;
 using LivrariaMHS.Models.Attributes;
 using LivrariaMHS.Models.Service;
@@ -119,8 +115,11 @@ namespace LivrariaMHS.Controllers
 
             try
             {
+
                 await VerificarEndereco(cliente);
                 await _clienteServico.UpdateAsync(cliente);
+
+                await ValidarEnderecos(Convert.ToInt32(Request.Form["ruaID"]), Convert.ToInt32(Request.Form["bairroID"]), Convert.ToInt32(Request.Form["cidadeID"]));
 
                 return RedirectToAction(nameof(Index));
             }
@@ -147,7 +146,7 @@ namespace LivrariaMHS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cliente = await _clienteServico.FindFirstAsync(x => x.ID == id);
+            var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Rua", "Cidade", "Bairro");
             await _clienteServico.RemoveAsync(cliente);
             await ValidarEnderecos(cliente.RuaID, cliente.BairroID, cliente.CidadeID);
             return RedirectToAction(nameof(Index));

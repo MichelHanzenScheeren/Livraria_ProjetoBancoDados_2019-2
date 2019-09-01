@@ -1,0 +1,53 @@
+﻿@model IEnumerable<LivrariaMHS.Models.Attributes.Venda>
+
+@{
+    ViewData["Title"] = "VENDAS";
+}
+
+<p><h1>@ViewData["Title"]</h1></p>
+<p> <a asp-action="Create" class="btn btn-outline-success mr-sm-5 col-2">Registrar Venda</a> </p>
+
+<table class="table table-hover">
+    <thead class="table-primary">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Data)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Livro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cliente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantidade)
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-dark">
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Data)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Livro.Titulo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cliente.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantidade)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.ID" class="badge badge-pill badge-info">Detalhes</a> /
+                <a asp-action="Edit" asp-route-id="@item.ID" class="badge badge-pill badge-info">Editar</a> /
+                <a asp-action="Delete" asp-route-id="@item.ID" class="badge badge-pill badge-info">Deletar</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -55,6 +55,6 @@ namespace LivrariaMHS.Models.Attributes
         public int CidadeID { get; set; }
         public virtual Cidade Cidade { get; set; }
 
-        
+        public virtual List<Venda> Vendas { get; set; }
     }
 }

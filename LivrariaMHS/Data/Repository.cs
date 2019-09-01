@@ -11,7 +11,7 @@ namespace LivrariaMHS.Data
 {
     public class Repository<T> where T : class
     {
-        private readonly LivrariaMHSContext _context;
+        protected readonly LivrariaMHSContext _context;
 
         public Repository(LivrariaMHSContext context)
         {
@@ -99,7 +99,5 @@ namespace LivrariaMHS.Data
         {
             return _context.Set<T>();
         }
-
-
     }
 }

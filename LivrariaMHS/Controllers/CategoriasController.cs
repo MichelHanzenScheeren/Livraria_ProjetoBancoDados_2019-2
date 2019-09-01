@@ -21,7 +21,7 @@ namespace LivrariaMHS.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _categoriaServico.GetAllAsync());
+            return View( (await _categoriaServico.GetAllAsync()).OrderBy(x => x.Nome));
         }
 
         public IActionResult Create()
@@ -36,8 +36,23 @@ namespace LivrariaMHS.Controllers
             if (!ModelState.IsValid)
                 return View(categoria);
 
+            if(await VerificarCriterioUnico(categoria))
+                return View(categoria);
+
+
             await _categoriaServico.InsertAsync(categoria);
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<bool> VerificarCriterioUnico(Categoria categoria)
+        {
+            if(await _categoriaServico.ExistAsync(x => x.Nome == categoria.Nome))
+            {
+                TempData["CustomError"] = "Já existe uma categoria cadastrada com o nome informado!";
+                ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
+                return true;
+            }
+            return false;
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -76,16 +91,32 @@ namespace LivrariaMHS.Controllers
             if (id != categoria.ID)
                 return RedirectToAction(nameof(Error), new { message = "O ID Informado não corresponde ao ID dacategoria!" });
 
+           
+            if (await VerificarEdicao(id, categoria))
+                return View(categoria);
+
             try
             {
                 await _categoriaServico.UpdateAsync(categoria);
-
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException erro)
             {
                 return RedirectToAction(nameof(Error), new { message = erro.Message });
             }
+        }
+
+        public async Task<bool> VerificarEdicao(int id, Categoria categoria)
+        {
+            
+            if (await _categoriaServico.ExistAsync(x => x.Nome == categoria.Nome && x.ID != id))
+            {
+                TempData["CustomError"] = "Já existe uma categoria cadastrada com o nome informado!";
+                ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
+                return true;
+            }
+            
+            return false;
         }
 
         public async Task<IActionResult> Delete(int? id)
