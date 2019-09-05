@@ -29,10 +29,24 @@ namespace LivrariaMHS.Controllers
             return View(await _clienteServico.GetAllAsync());
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string pesquisa)
+        {
+            if (!string.IsNullOrEmpty(pesquisa))
+            {
+                ViewData["pesquisa"] = pesquisa;
+                return View(await _clienteServico.FindAsync(x => x.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.CPF.Contains(pesquisa)));
+            }
+            else
+                return View(await _clienteServico.GetAllAsync());
+        }
+
         public IActionResult Create()
         {
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

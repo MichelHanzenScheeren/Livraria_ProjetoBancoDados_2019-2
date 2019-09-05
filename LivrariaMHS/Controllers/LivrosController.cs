@@ -34,6 +34,18 @@ namespace LivrariaMHS.Controllers
         {
             return View((await _livroServico.GetAllAsync("Autor")).OrderBy(x => x.Titulo));
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string pesquisa)
+        {
+            if (!string.IsNullOrEmpty(pesquisa))
+            {
+                ViewData["pesquisa"] = pesquisa;
+                return View(await _livroServico.FindAsync(x => x.Titulo.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Autor.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase), "Autor"));
+            }
+            else
+                return View((await _livroServico.GetAllAsync("Autor")).OrderBy(x => x.Titulo));
+        }
 
         public async Task<IActionResult> Create()
         {

@@ -50,9 +50,19 @@ namespace LivrariaMHS.Data
             }
         }
 
-        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicado)
+        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicado, params string[] incluir)
         {
-            return await _context.Set<T>().Where(predicado).ToListAsync();
+            if (incluir.Length != 0)
+            {
+                var pesquisa = _context.Set<T>().Include(incluir[0]);
+                for (int i = 1; i < incluir.Length; i++)
+                {
+                    pesquisa = pesquisa.Include(incluir[i]);
+                }
+                return await pesquisa.Where(predicado).ToListAsync();
+            }
+            else
+                return await _context.Set<T>().Where(predicado).ToListAsync();
         }
 
         public async Task<T> FindFirstAsync(Expression<Func<T, bool>> predicado)

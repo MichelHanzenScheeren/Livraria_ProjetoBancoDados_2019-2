@@ -28,6 +28,34 @@ namespace LivrariaMHS.Controllers
             return View((await _vendaServico.GetAllAsync("Cliente", "Livro")).OrderByDescending(x => x.Data));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string pesquisa, DateTime? data)
+        {
+            if(string.IsNullOrEmpty(pesquisa) && !(data.HasValue))
+                return View((await _vendaServico.GetAllAsync("Cliente", "Livro")).OrderByDescending(x => x.Data));
+
+            List<Venda> filtro = new List<Venda>();
+            if (!string.IsNullOrEmpty(pesquisa))
+            {
+                ViewData["pesquisa"] = pesquisa;
+                filtro = await _vendaServico.FindAsync(x => x.Livro.Titulo.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Livro.Autor.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Cliente.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Cliente.CPF.Contains(pesquisa), "Cliente", "Livro");
+            }
+            if(data.HasValue)
+            {
+                ViewData["date"] = data.Value.ToString("yyyy-MM-dd");
+                foreach (var item in await _vendaServico.FindAsync(x => x.Data.Date == data.Value.Date, "Cliente", "Livro"))
+                {
+                    filtro.Add(item);
+                }
+            }
+            if (filtro.Any())
+                filtro.OrderByDescending(x => x.Data);
+
+            return View(filtro.Distinct().ToList());
+
+        }
+
         public async Task<IActionResult> Create()
         {
             Venda venda = new Venda() { Data = DateTime.Now };

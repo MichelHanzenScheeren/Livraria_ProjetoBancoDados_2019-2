@@ -5,54 +5,72 @@
 }
 
 <p><h1>@ViewData["Title"]</h1></p>
-<p> <a asp-action="Create" class="btn btn-outline-success mr-sm-5 col-2">Novo</a> </p>
 
-<table class="table table-hover">
-    <thead class="table-primary" >
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sexo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Telefone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CPF)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody class="table-dark">
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Sexo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Telefone)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CPF)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="badge badge-pill badge-info">Editar</a> /
-                    <a asp-action="Details" asp-route-id="@item.ID" class="badge badge-pill badge-info">Detalhes</a> /
-                    <a asp-action="Delete" asp-route-id="@item.ID" class="badge badge-pill badge-info">Deletar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<hr />
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <form asp-action="Index" class="form form-inline">
+            <input class="form form-control float-left mr-sm-3 col-4" type="text" name="pesquisa" id="pesquisa" placeholder="PESQUISAR CLIENTE" value=@ViewData["pesquisa"]>
+            <button class="float-left btn btn-outline-warning my-4 col-2 mr-sm-3" type="submit">Filtrar</button>
+            <a asp-action="Create" class="btn btn-outline-success col-2">Novo</a>
+        </form>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Nome)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Sexo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Telefone)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CPF)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="table-dark">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nome)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Sexo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Telefone)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CPF)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.ID" class="badge badge-pill badge-info">Editar</a> /
+                            <a asp-action="Details" asp-route-id="@item.ID" class="badge badge-pill badge-info">Detalhes</a> /
+                            <a asp-action="Delete" asp-route-id="@item.ID" class="badge badge-pill badge-info">Deletar</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td class="text-danger" colspan="7"> NENHUM CLIENTE ENCONTRADO... </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
