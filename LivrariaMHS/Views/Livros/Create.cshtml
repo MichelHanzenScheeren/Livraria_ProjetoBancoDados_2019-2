@@ -44,7 +44,7 @@
             <div class="form-group">
                 <label asp-for="Categorias" class="control-label"></label>
                 <select multiple name="categoriasID" asp-items="@(new MultiSelectList(Model.Categorias, "ID", "Nome"))" class="form-control"></select>
-                <span asp-validation-for="Categorias" class="text-danger"></span>            
+                <span asp-validation-for="Categorias" class="text-danger"></span>
             </div>
             <hr /><hr />
             <div class="form-group">

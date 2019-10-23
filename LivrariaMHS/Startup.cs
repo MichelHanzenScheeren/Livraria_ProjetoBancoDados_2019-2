@@ -22,12 +22,10 @@ namespace LivrariaMHS
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
@@ -35,7 +33,8 @@ namespace LivrariaMHS
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<LivrariaMHSContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LivrariaMHSContext")));
+            string connectionString = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=LivrariaMHS;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            services.AddDbContext<LivrariaMHSContext>(options => options.UseSqlServer(connectionString));
 
             services.AddScoped<ClienteServico>();
             services.AddScoped<CidadeServico>();
@@ -48,7 +47,6 @@ namespace LivrariaMHS
             services.AddScoped<VendaServico>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             var brasil = new CultureInfo("pt-BR");
@@ -68,7 +66,6 @@ namespace LivrariaMHS
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -80,7 +77,7 @@ namespace LivrariaMHS
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Livros}/{action=Index}/{id?}");
             });
         }
     }

@@ -69,6 +69,8 @@ namespace LivrariaMHS.Controllers
             if (!ModelState.IsValid)
                 return View(new VendaViewModel() { Venda = venda, Livros = (await _livroServico.GetAllAsync()).OrderBy(x => x.Titulo).ToList(), Clientes = (await _clienteServico.GetAllAsync()).OrderBy(x => x.Nome).ToList() });
 
+            var livro = await _livroServico.FindByIdAsync(x => x.ID == venda.LivroID);
+            venda.ValorUnitario = livro.Preco;
             await _vendaServico.InsertAsync(venda);
             return RedirectToAction(nameof(Index));
         }

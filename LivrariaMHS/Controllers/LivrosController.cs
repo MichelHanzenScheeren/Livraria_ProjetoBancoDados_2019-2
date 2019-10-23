@@ -12,6 +12,8 @@ using LivrariaMHS.Models.Excpetions;
 using System.Diagnostics;
 using LivrariaMHS.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace LivrariaMHS.Controllers
 {
@@ -219,6 +221,11 @@ namespace LivrariaMHS.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModelError);
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
         }
     }
 }
