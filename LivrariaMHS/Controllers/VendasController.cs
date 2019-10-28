@@ -144,6 +144,37 @@ namespace LivrariaMHS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public IActionResult Informacoes()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Informacoes(string tipo, DateTime dataInicio, DateTime dataFim)
+        {
+            ViewData["tipo"] = tipo;
+            ViewData["dataInicio"] = dataInicio.ToString("yyyy-MM-dd");
+            ViewData["dataFim"] = dataFim.ToString("yyyy-MM-dd");
+            if (tipo == "media")
+            {
+                var resultado = _vendaServico.ValorMedioDasVendas(dataInicio, dataFim);
+                if (resultado == null)
+                    ViewData["resultado"] = 0;
+                else
+                    ViewData["resultado"] = resultado;
+            }
+            else
+            {
+                var resultado = _vendaServico.ValorTotalDasVendas(dataInicio, dataFim);
+                if (resultado == null)
+                    ViewData["resultado"] = 0;
+                else
+                    ViewData["resultado"] = resultado;
+            }
+            return View();
+        }
+
         public IActionResult Error(string message)
         {
             var viewModelError = new ErrorViewModel

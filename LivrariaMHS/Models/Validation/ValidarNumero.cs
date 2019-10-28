@@ -32,10 +32,10 @@ namespace LivrariaMHS.Models.Validation
             {
                 var errorMessage = FormatErrorMessage(validationContext.DisplayName);
 
-                if(!(value is double || value is int))
+                if(!(value is decimal || value is int))
                     return new ValidationResult(errorMessage);
 
-                double valor = Convert.ToDouble(value);
+                decimal valor = Convert.ToDecimal(value);
 
                 if (_min.HasValue)
                 {

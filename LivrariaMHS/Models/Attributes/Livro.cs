@@ -23,7 +23,7 @@ namespace LivrariaMHS.Models.Attributes
         [Required(ErrorMessage = "Preenchimento obrigatório!")]
         [DisplayFormat(DataFormatString = "{0:F2}")]
         [ValidarNumero(0)]
-        public double Preco { get; set; }
+        public decimal Preco { get; set; }
 
 
         [Display(Name = "Edição")]
@@ -41,6 +41,11 @@ namespace LivrariaMHS.Models.Attributes
         public virtual Autor Autor { get; set; }
 
         public virtual List<LivroCategoria> LivrosCategorias { get; set; }
+
+        // Imagem:
+        public string Nome { get; set; }
+        public byte[] Dados { get; set; }
+        public string ContentType { get; set; }
 
     }
 }

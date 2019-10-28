@@ -1,0 +1,76 @@
+﻿<main role="main">
+    <section class="container" style="margin-top: 50px">
+        <div class="row">
+            <aside class="col-sm-6 offset-sm-3">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title mt-2">Informações sobre as Vendas</h4>
+                    </header>
+                    <article class="card-body">
+                        <form asp-action="Informacoes">
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="tipo" class="control-label">Tipo</label>
+                                    <select name="tipo" id="tipo" class="form-control" required>
+                                        @if (@ViewData["tipo"] != null)
+                                        {
+                                            @if (@ViewData["tipo"].ToString() == "media")
+                                            {
+                                                <option value="total">Valor Total das Vendas</option>
+                                                <option value="media" selected>Valor Médio de Cada Venda</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="total" selected>Valor Total das Vendas</option>
+                                                <option value="media">Valor Médio de Cada Venda</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="total" selected>Valor Total das Vendas</option>
+                                            <option value="media">Valor Médio de Cada Venda</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="dataInicio" class="control-label">Data Inicial</label>
+                                    <input type="date" name="dataInicio" id="dataInicio" class="form-control" required value=@ViewData["dataInicio"] />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="dataFim" class="control-label">Data Final</label>
+                                    <input type="date" name="dataFim" id="dataFim" class="form-control" required value=@ViewData["dataFim"] />
+                                </div>
+                            </div>
+                            @if (ViewData["resultado"] != null)
+                            {
+                                <hr />
+                                <div class="form-row">
+                                    <div class="col form-group">
+                                        <label for="resultado" class="control-label text-success">RESULTADO (R$):</label>
+                                        <input type="number" name="resultado" id="resultado" class="form-control" readonly value=@ViewData["resultado"] />
+                                    </div>
+                                </div>
+                            }
+
+                            <hr />
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <button type="submit" class="btn btn-success btn-block btn-lg" /> Selecionar
+                                </div>
+                            </div>
+                        </form>
+                    </article>
+                </div>
+            </aside>
+        </div>
+    </section>
+    <hr />
+</main>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

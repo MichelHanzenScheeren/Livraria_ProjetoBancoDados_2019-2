@@ -139,13 +139,17 @@ namespace LivrariaMHS.Migrations
 
                     b.Property<int>("AutorID");
 
-                    b.Property<int?>("CategoriaID");
+                    b.Property<string>("ContentType");
+
+                    b.Property<byte[]>("Dados");
 
                     b.Property<int>("Edicao");
 
+                    b.Property<string>("Nome");
+
                     b.Property<int>("Paginas");
 
-                    b.Property<double>("Preco");
+                    b.Property<decimal>("Preco");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
@@ -154,8 +158,6 @@ namespace LivrariaMHS.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("AutorID");
-
-                    b.HasIndex("CategoriaID");
 
                     b.ToTable("Livros");
                 });
@@ -208,7 +210,7 @@ namespace LivrariaMHS.Migrations
 
                     b.Property<int>("Quantidade");
 
-                    b.Property<double>("ValorUnitario");
+                    b.Property<decimal>("ValorUnitario");
 
                     b.HasKey("ID");
 
@@ -243,10 +245,6 @@ namespace LivrariaMHS.Migrations
                         .WithMany("Livros")
                         .HasForeignKey("AutorID")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LivrariaMHS.Models.Attributes.Categoria")
-                        .WithMany("Livros")
-                        .HasForeignKey("CategoriaID");
                 });
 
             modelBuilder.Entity("LivrariaMHS.Models.Attributes.LivroCategoria", b =>

@@ -1,59 +1,100 @@
 ﻿@model LivrariaMHS.Models.ViewModels.LivroViewModel
+<script>
+    function alterarImagem(componente) {
+        var elemento = document.getElementById("mostrarImagem");//.style.display = "none";
+        elemento.src = window.URL.createObjectURL(componente.files[0]);
+    }
+</script>
 
-@{
-    ViewData["Title"] = "EDITAR LIVRO";
-}
-
-<p><h1>@ViewData["Title"]</h1></p>
-<hr />
-
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Livro.ID" />
-            <div class="form-group">
-                <label asp-for="Livro.Titulo" class="control-label"></label>
-                <input asp-for="Livro.Titulo" class="form-control" />
-                <span asp-validation-for="Livro.Titulo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Livro.Paginas" class="control-label"></label>
-                <input asp-for="Livro.Paginas" type="number" min="1" max="2000" class="form-control" />
-                <span asp-validation-for="Livro.Paginas" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Livro.Preco" class="control-label"></label>
-                <input asp-for="Livro.Preco" class="form-control" />
-                <span asp-validation-for="Livro.Preco" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Livro.Edicao" class="control-label"></label>
-                <input asp-for="Livro.Edicao" class="form-control" />
-                <span asp-validation-for="Livro.Edicao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Livro.Ano" class="control-label"></label>
-                <input asp-for="Livro.Ano" class="form-control" />
-                <span asp-validation-for="Livro.Ano" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Livro.Autor.Nome" class="control-label"></label>
-                <input asp-for="Livro.Autor.Nome" class="form-control" />
-                <span asp-validation-for="Livro.Autor.Nome" class="text-danger"></span>
-                <input type="hidden" asp-for="Livro.AutorID" name="autorAntigoID" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Categorias" class="control-label"></label>
-                <select multiple  name="categoriasID" asp-items="@((MultiSelectList)ViewBag.categorias)" class="form-control"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-warning btn-lg" /> &ensp;
-                <a asp-action="Index" class="btn btn-info btn-lg">Voltar</a>
-            </div>
-        </form>
-    </div>
-</div>
+<main role="main">
+    <section class="container" style="margin-top: 50px">
+        <div class="row">
+            <aside class="col-sm-6 offset-sm-3">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title mt-2">Editar Livro</h4>
+                    </header>
+                    <article class="card-body">
+                        <form asp-action="Edit" enctype="multipart/form-data">
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" asp-for="Livro.ID" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="imagem" class="control-label">Imagem</label>
+                                    <img id="mostrarImagem" class="form-group" src="@Url.Action("GetFoto", "Livros", new { id = Model.Livro.ID })" style="width:100%">
+                                    <input type="file" name="imagem" id="inseririmagem" class="form-control-file" onchange="alterarImagem(this)" />
+                                    <input type="hidden" asp-for="Livro.Nome" />
+                                    <input type="hidden" asp-for="Livro.Dados" />
+                                    <input type="hidden" asp-for="Livro.ContentType" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label asp-for="Livro.Titulo" class="control-label"></label>
+                                    <input asp-for="Livro.Titulo" class="form-control" />
+                                    <span asp-validation-for="Livro.Titulo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label asp-for="Livro.Autor.Nome" class="control-label"></label>
+                                    <input asp-for="Livro.Autor.Nome" class="form-control" />
+                                    <span asp-validation-for="Livro.Autor.Nome" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label asp-for="Livro.Paginas" class="control-label">Nº Páginas</label>
+                                    <input asp-for="Livro.Paginas" class="form-control" />
+                                    <span asp-validation-for="Livro.Paginas" class="text-danger"></span>
+                                </div>
+                                <div class="col form-group">
+                                    <label asp-for="Livro.Ano" class="control-label">Ano de Lançamento</label>
+                                    <input asp-for="Livro.Ano" class="form-control" />
+                                    <span asp-validation-for="Livro.Ano" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label asp-for="Livro.Edicao" class="control-label"></label>
+                                    <input asp-for="Livro.Edicao" class="form-control" />
+                                    <span asp-validation-for="Livro.Edicao" class="text-danger"></span>
+                                </div>
+                                <div class="col form-group">
+                                    <label asp-for="Livro.Preco" class="control-label"></label>
+                                    <input asp-for="Livro.Preco" class="form-control" />
+                                    <span asp-validation-for="Livro.Preco" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label class="control-label"></label>
+                                    <select multiple name="categoriasID" asp-items="@((MultiSelectList)ViewBag.categorias)" class="form-control"></select>
+                                    <span asp-validation-for="Livro.LivrosCategorias" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <button type="submit" class="btn btn-success btn-block btn-lg" /> Confirmar
+                                </div>
+                            </div>
+                        </form>
+                    </article>
+                </div>
+            </aside>
+        </div>
+    </section>
+    <hr />
+</main>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -10,6 +10,8 @@ using LivrariaMHS.Models.Service;
 using System.Globalization;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Localization;
+using LivrariaMHS.Data;
+using System.Threading.Tasks;
 
 namespace LivrariaMHS
 {
@@ -36,6 +38,8 @@ namespace LivrariaMHS
             string connectionString = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=LivrariaMHS;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddDbContext<LivrariaMHSContext>(options => options.UseSqlServer(connectionString));
 
+            services.AddScoped<ConfigDataBase>();
+
             services.AddScoped<ClienteServico>();
             services.AddScoped<CidadeServico>();
             services.AddScoped<BairroServico>();
@@ -47,7 +51,7 @@ namespace LivrariaMHS
             services.AddScoped<VendaServico>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ConfigDataBase configDataBase)
         {
             var brasil = new CultureInfo("pt-BR");
             var localizationOptions = new RequestLocalizationOptions
@@ -58,10 +62,10 @@ namespace LivrariaMHS
             };
             app.UseRequestLocalization(localizationOptions);
 
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                configDataBase.DataBaseInitializer();
             }
             else
             {

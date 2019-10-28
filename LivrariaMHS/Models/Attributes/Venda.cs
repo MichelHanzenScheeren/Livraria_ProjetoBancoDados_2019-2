@@ -25,7 +25,7 @@ namespace LivrariaMHS.Models.Attributes
         [Required(ErrorMessage = "Preenchimento obrigatório!")]
         [DisplayFormat(DataFormatString = "{0:F2}")]
         [ValidarNumero(0)]
-        public double ValorUnitario { get; set; }
+        public decimal ValorUnitario { get; set; }
 
         public int ClienteID { get; set; }
         public virtual Cliente Cliente { get; set; }

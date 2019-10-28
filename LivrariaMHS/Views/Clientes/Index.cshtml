@@ -11,14 +11,18 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
         <form asp-action="Index" class="form form-inline">
-            <input class="form form-control float-left mr-sm-3 col-4" type="text" name="pesquisa" id="pesquisa" placeholder="PESQUISAR CLIENTE" value=@ViewData["pesquisa"]>
-            <button class="float-left btn btn-outline-warning my-4 col-2 mr-sm-3" type="submit">Filtrar</button>
+            <input class="form form-control float-left mr-sm-n5 col-4" type="text" name="pesquisa" id="pesquisa" placeholder="PESQUISAR CLIENTE" value=@ViewData["pesquisa"]>
+            <button class="btn form-control btn-warning btn-group my-4 col-1-24 mr-sm-3" type="submit"><i class="fa fa-search"></i></button>
             <a asp-action="Create" class="btn btn-outline-success col-2">Novo</a>
         </form>
     </div>
     <div class="panel-body">
+        @if (@TempData["Concluido"] != null)
+        {
+            <p><span class="text-success col-2">@TempData["Concluido"] </span></p>
+        }
         <table class="table table-hover">
-            <thead class="table-primary">
+            <thead class="table-secondary">
                 <tr>
                     <th>
                         @Html.DisplayNameFor(model => model.Nome)

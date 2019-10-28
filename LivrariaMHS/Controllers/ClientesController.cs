@@ -58,6 +58,7 @@ namespace LivrariaMHS.Controllers
             await VerificarEndereco(cliente);
 
             await _clienteServico.InsertAsync(cliente);
+            TempData["Concluido"] = "Cliente Cadastrado!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -132,9 +133,7 @@ namespace LivrariaMHS.Controllers
 
                 await VerificarEndereco(cliente);
                 await _clienteServico.UpdateAsync(cliente);
-
-                await ValidarEnderecos(Convert.ToInt32(Request.Form["ruaID"]), Convert.ToInt32(Request.Form["bairroID"]), Convert.ToInt32(Request.Form["cidadeID"]));
-
+                TempData["Concluido"] = "Cadastro Editado!";
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException erro)
@@ -162,20 +161,8 @@ namespace LivrariaMHS.Controllers
         {
             var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Rua", "Cidade", "Bairro");
             await _clienteServico.RemoveAsync(cliente);
-            await ValidarEnderecos(cliente.RuaID, cliente.BairroID, cliente.CidadeID);
+            TempData["Concluido"] = "Cadastro Apagado!";
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task ValidarEnderecos(int idRua, int idBairro, int idCidade)
-        {
-            if (!(await _clienteServico.ExistAsync(x => x.RuaID == idRua)))
-                await _ruaServico.RemoveAsync(await _ruaServico.FindFirstAsync(x => x.ID == idRua));
-
-            if (!(await _clienteServico.ExistAsync(x => x.BairroID == idBairro)))
-                await _bairroServico.RemoveAsync(await _bairroServico.FindFirstAsync(x => x.ID == idBairro));
-
-            if (!(await _clienteServico.ExistAsync(x => x.CidadeID == idCidade)))
-                await _cidadeServico.RemoveAsync(await _cidadeServico.FindFirstAsync(x => x.ID == idCidade));
         }
 
         public IActionResult Error(string message)

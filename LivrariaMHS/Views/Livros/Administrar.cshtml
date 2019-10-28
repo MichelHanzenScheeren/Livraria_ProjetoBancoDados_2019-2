@@ -1,0 +1,42 @@
+﻿<main role="main">
+    <section class="container" style="margin-top: 50px">
+        <div class="row">
+            <aside class="col-sm-6 offset-sm-3">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title mt-2">Administração dos Preços</h4>
+                    </header>
+                    <article class="card-body">
+                        <form asp-action="Administrar">
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="porcentagem" class="control-label">Percentual</label>
+                                    <input type="number" name="porcentagem" id="porcentagem" class="form-control" required/>
+                                </div>
+                                <div class="col form-group">
+                                    <label for="tipo" class="control-label">Tipo</label>
+                                    <select name="tipo" id="tipo" class="form-control">
+                                        <option value="+" selected>Aumentar Preço</option>
+                                        <option value="-">Diminuir Preço</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <button type="submit" class="btn btn-success btn-block btn-lg" /> Confirmar
+                                </div>
+                            </div>
+                        </form>
+                    </article>
+                </div>
+            </aside>
+        </div>
+    </section>
+    <hr />
+</main>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

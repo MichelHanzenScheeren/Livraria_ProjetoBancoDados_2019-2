@@ -56,7 +56,7 @@ namespace LivrariaMHS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Livro livro, int[] categoriasID)
+        public async Task<IActionResult> Create(Livro livro, int[] categoriasID, IFormFile imagem)
         {
             if (!ModelState.IsValid)
                 return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync()});
@@ -65,11 +65,13 @@ namespace LivrariaMHS.Controllers
             {
                 TempData["CustomError"] = "Informe pelo menos uma categoria!";
                 ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
+                ModelState.AddModelError("livro.LivrosCategorias", "Informe pelo menos uma categoria!");
                 return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync() } );
             }
-
             await VerificarCadastroAutor(livro);
+            ConfigurarImagem(livro, imagem);
             await _livroServico.InsertAsync(livro);
+            TempData["Concluido"] = "Livro Cadastrado!";
 
             int idLivro = (await _livroServico.LastAsync()).ID;
             foreach (var item in categoriasID)
@@ -77,8 +79,29 @@ namespace LivrariaMHS.Controllers
                 LivroCategoria livroCategoria = new LivroCategoria() { LivroID = idLivro, CategoriaID = item };
                 await _livroCategoriaServico.InsertAsync(livroCategoria);
             }
-
             return RedirectToAction(nameof(Index));
+        }
+
+        private void ConfigurarImagem(Livro livro, IFormFile imagem)
+        {
+            if (imagem == null) 
+                return;
+
+            MemoryStream ms = new MemoryStream();
+            imagem.OpenReadStream().CopyTo(ms);
+            livro.Nome = imagem.FileName;
+            livro.Dados = ms.ToArray();
+            livro.ContentType = imagem.ContentType;
+        }
+
+        public async Task<FileContentResult> GetFoto(int id)
+        {
+            Livro livro = await _livroServico.FindByIdAsync(x => x.ID == id);
+            if (livro != null)
+            {
+                return File(livro.Dados, livro.ContentType);
+            }
+            return null;
         }
 
         private async Task VerificarCadastroAutor(Livro livro)
@@ -123,7 +146,7 @@ namespace LivrariaMHS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Livro livro, int[] categoriasID)
+        public async Task<IActionResult> Edit(int id, Livro livro, int[] categoriasID, IFormFile imagem)
         {
             if (!ModelState.IsValid)
                 return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync() });
@@ -145,8 +168,11 @@ namespace LivrariaMHS.Controllers
             {
                 await VerificarAlteracoesCategorias(id, categoriasID);
                 await VerificarCadastroAutor(livro);
+                if (imagem != null)
+                    ConfigurarImagem(livro, imagem);
+
                 await _livroServico.UpdateAsync(livro);
-                await ValidarExistenciaAutor(Convert.ToInt32(Request.Form["autorAntigoID"]));
+                TempData["Concluido"] = "Livro Editado!";
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException erro)
@@ -177,13 +203,6 @@ namespace LivrariaMHS.Controllers
             
         }
 
-        private async Task ValidarExistenciaAutor(int idAutor)
-        {
-            
-            if (!(await _livroServico.ExistAsync(x => x.AutorID == idAutor)))
-                await _autorServico.RemoveAsync(await _autorServico.FindByIdAsync(x => x.ID == idAutor)); 
-        }
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -200,17 +219,36 @@ namespace LivrariaMHS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-           var livro = await _livroServico.FindByIdAsync(x => x.ID == id);
+           var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias");
             try
             {
                 await _livroServico.RemoveAsync(livro);
-                await ValidarExistenciaAutor(livro.AutorID);
+                TempData["Concluido"] = "Livro Apagado!";
                 return RedirectToAction(nameof(Index));
             }
             catch (IntegrityException)
             {
                 return RedirectToAction(nameof(Error), new { message = "NÃO É POSSÍVEL DELETAR, POIS EXISTEM OUTROS ELEMENTOS DEPENDENTES!" });
             }
+        }
+
+        [HttpGet]
+        public IActionResult Administrar()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Administrar(decimal porcentagem, string tipo)
+        {
+            _livroServico.AlterPrecoLivros(porcentagem, tipo);
+            TempData["Concluido"] = "Atualização Efetuada!";
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
         }
 
         public IActionResult Error(string message)
@@ -221,11 +259,6 @@ namespace LivrariaMHS.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModelError);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
     }
 }
