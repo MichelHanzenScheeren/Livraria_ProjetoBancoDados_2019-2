@@ -32,7 +32,7 @@ namespace LivrariaMHS.Models.Attributes
         [Required(ErrorMessage = "Preenchimento obrigatório!")]
         [DataType(DataType.Date, ErrorMessage = "Data inválida!")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        [Display(Name = "Data de Nascimento")]
+        [Display(Name = "Nascimento")]
         public DateTime DataNascimento { get; set; }
 
         [Display(Name = "Celular")]

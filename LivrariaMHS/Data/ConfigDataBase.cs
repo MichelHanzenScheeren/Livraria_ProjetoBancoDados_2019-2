@@ -15,6 +15,7 @@ namespace LivrariaMHS.Data
             _context.Database.Migrate();
             CriarTriggers();
             CriarProcedures();
+            CriarFunctions();
         }
 
         // TRIGGERS
@@ -66,19 +67,46 @@ namespace LivrariaMHS.Data
             );
 
             //Procedure com retorno que faz a média do valor das vendas realizadas dentro do intervalo informado
-            _context.Database.ExecuteSqlCommand(
+            /*_context.Database.ExecuteSqlCommand(
                 "CREATE OR ALTER PROCEDURE ValorMedioDasVendas @DataInicial date, @DataFinal date  AS " +
                     "SELECT CONVERT(DECIMAL(10, 2), AVG(Quantidade * ValorUnitario)) " +
                     "FROM Vendas  " +
                     "WHERE convert(CHAR, CAST(Data AS DATE),103) BETWEEN convert(CHAR,@DataInicial,103) AND convert(CHAR,@DataFinal,103)"
-            );
+            );*/
 
             //Procedure com retorno que devolve o valor total das vendas dentro do intervalo informado
-            _context.Database.ExecuteSqlCommand(
-                "CREATE OR ALTER PROCEDURE ValorTotalDasVendas @DataInicial date, @DataFinal date AS " +
+            /*_context.Database.ExecuteSqlCommand(
+                "CREATE OR ALTER FUNCTION ValorTotalDasVendas @DataInicial date, @DataFinal date AS " +
                     "SELECT CONVERT(DECIMAL(10,2), SUM(Quantidade * ValorUnitario)) " +
                     "FROM Vendas " +
                     "WHERE convert(CHAR, CAST(Data AS DATE),103) BETWEEN convert(CHAR,@DataInicial,103) AND convert(CHAR,@DataFinal,103)"
+            );*/
+        }
+
+        public void CriarFunctions()
+        {
+            _context.Database.ExecuteSqlCommand(
+                "CREATE OR ALTER FUNCTION ValorMedioDasVendas (@DataInicial date, @DataFinal date) " +
+                "RETURNS TABLE " +
+                "AS RETURN ( " +
+                    "SELECT CONVERT(DECIMAL(10, 2), AVG(Quantidade * ValorUnitario)) AS MEDIA " +
+                    "FROM Vendas " +
+                    "WHERE convert(CHAR, CAST(Data AS DATE), 103) " +
+                    "BETWEEN convert(CHAR, @DataInicial, 103) " +
+                    "AND convert(CHAR, @DataFinal, 103) " +
+                ")"
+            );
+
+            _context.Database.ExecuteSqlCommand(
+                "CREATE OR ALTER FUNCTION ValorTotalDasVendas (@DataInicial date, @DataFinal date) " +
+                "RETURNS TABLE " +
+                "AS RETURN ( " +
+                    "SELECT CONVERT(DECIMAL(10,2), SUM(Quantidade * ValorUnitario)) AS TOTAL " +
+                    "FROM Vendas " +
+                    "WHERE convert(CHAR, CAST(Data AS DATE), 103) " +
+                    "BETWEEN convert(CHAR,@DataInicial, 103) " +
+                    "AND convert(CHAR, @DataFinal, 103) " +
+                    ")"
             );
         }
     }

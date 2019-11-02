@@ -7,24 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LivrariaMHS.Models;
 using LivrariaMHS.Models.Attributes;
-using LivrariaMHS.Models.Service;
 using LivrariaMHS.Models.Excpetions;
 using System.Diagnostics;
 using LivrariaMHS.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using LivrariaMHS.Data.Repositories;
 
 namespace LivrariaMHS.Controllers
 {
     public class LivrosController : Controller
     {
-        private readonly LivroServico _livroServico;
-        private readonly AutorServico _autorServico;
-        private readonly CategoriaServico _categoriaServico;
-        private readonly LivroCategoriaServico _livroCategoriaServico;
+        private readonly LivroRepository _livroServico;
+        private readonly AutorRepository _autorServico;
+        private readonly CategoriaRepository _categoriaServico;
+        private readonly LivroCategoriaRepository _livroCategoriaServico;
 
-        public LivrosController(LivroServico livroServico, AutorServico autorServico, CategoriaServico categoriaServico, LivroCategoriaServico livroCategoriaServico)
+        public LivrosController(LivroRepository livroServico, AutorRepository autorServico, CategoriaRepository categoriaServico, LivroCategoriaRepository livroCategoriaServico)
         {
             _livroServico = livroServico;
             _autorServico = autorServico;

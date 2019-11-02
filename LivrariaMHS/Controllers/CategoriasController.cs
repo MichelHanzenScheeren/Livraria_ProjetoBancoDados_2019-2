@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using LivrariaMHS.Data.Repositories;
 using LivrariaMHS.Models;
 using LivrariaMHS.Models.Attributes;
-using LivrariaMHS.Models.Service;
+using LivrariaMHS.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LivrariaMHS.Controllers
 {
     public class CategoriasController : Controller
     {
-        private readonly CategoriaServico _categoriaServico;
+        private readonly CategoriaRepository _categoriaServico;
+        private readonly LivroCategoriaRepository _livroCategoriaServico;
 
-        public CategoriasController(CategoriaServico categoriaServico)
+        public CategoriasController(CategoriaRepository categoriaServico, LivroCategoriaRepository livroCategoriaServico)
         {
             _categoriaServico = categoriaServico;
+            _livroCategoriaServico = livroCategoriaServico;
     }
 
         public async Task<IActionResult> Index()
@@ -58,14 +61,16 @@ namespace LivrariaMHS.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
+            {
                 return RedirectToAction(nameof(Error), new { message = "Categoria Inválida!" });
-
+            }
             var categoria = await _categoriaServico.FindByIdAsync(x => x.ID == id);
-
             if (categoria == null)
+            {
                 return RedirectToAction(nameof(Error), new { message = "Categoria não encontrada!" });
-
-            return View(categoria);
+            }
+            var livrosCategorias = await _livroCategoriaServico.FindAsync(x => x.CategoriaID == categoria.ID, "Livro", "Livro.Autor");
+            return View(new CategoriaViewModel { Categoria = categoria, LivrosCategorias = livrosCategorias});
         }
 
         public async Task<IActionResult> Edit(int? id)

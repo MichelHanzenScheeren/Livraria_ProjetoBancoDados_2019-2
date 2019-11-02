@@ -1,4 +1,4 @@
-﻿@model LivrariaMHS.Models.ViewModels.LivroViewModel
+﻿@model LivroViewModel
 <script>
     function alterarImagem(componente) {
         var elemento = document.getElementById("mostrarImagem");//.style.display = "none";
@@ -8,7 +8,7 @@
 </script>
 
 <main role="main">
-    <section class="container" style="margin-top: 50px">
+    <section class="container" style="margin-top: 50px;">
         <div class="row">
             <aside class="col-sm-6 offset-sm-3">
                 <div class="card">
@@ -25,7 +25,7 @@
                             <div class="form-row">
                                 <div class="col form-group">
                                     <label for="imagem" class="control-label">Imagem</label>
-                                    <img id="mostrarImagem" class="form-group" style="width:100%;display:none">
+                                    <img id="mostrarImagem" class="form-group" style="width:100%;">
                                     <input type="file" name="imagem" class="form-control-file" onchange="alterarImagem(this)" />
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                             <div class="form-row">
                                 <div class="col form-group">
                                     <label asp-for="Livro.Autor.Nome" class="control-label"></label>
-                                    <input asp-for="Livro.Autor.Nome" class="form-control" />
+                                    <input asp-for="Livro.Autor.Nome" id="autoCompleteAutor" class="form-control" />
                                     <span asp-validation-for="Livro.Autor.Nome" class="text-danger"></span>
                                 </div>
                             </div>
@@ -73,8 +73,8 @@
                             <br />
                             <div class="form-row">
                                 <div class="col form-group">
-                                    <label class="control-label"></label>
-                                    <select multiple name="categoriasID" asp-items="@(new MultiSelectList(Model.Categorias, "ID", "Nome"))" class="form-control"></select>
+                                    <label class="control-label">Categoria(s)</label>
+                                    <select multiple name="categoriasID" asp-items="@(new MultiSelectList(Model.Categorias, "ID", "Nome"))" class="form-control selectpicker" data-style="btn-default text-dark" title="Selecione"></select>
                                     <span asp-validation-for="Livro.LivrosCategorias" class="text-danger"></span>
                                 </div>
                             </div>
@@ -93,6 +93,21 @@
     <hr />
 </main>
 
+<script>
+    $(document).ready(function () {
+        $("#autoCompleteAutor").autocomplete({
+            source: function (request, response) {
+                $.getJSON("/api/autoComplete/searchAutores", request, function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item
+                        }
+                    }))
+                })
+            }
+        });
+    });
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -6,12 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using LivrariaMHS.Models;
-using LivrariaMHS.Models.Service;
 using System.Globalization;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Localization;
 using LivrariaMHS.Data;
 using System.Threading.Tasks;
+using LivrariaMHS.Data.Repositories;
 
 namespace LivrariaMHS
 {
@@ -40,15 +40,15 @@ namespace LivrariaMHS
 
             services.AddScoped<ConfigDataBase>();
 
-            services.AddScoped<ClienteServico>();
-            services.AddScoped<CidadeServico>();
-            services.AddScoped<BairroServico>();
-            services.AddScoped<RuaServico>();
-            services.AddScoped<LivroServico>();
-            services.AddScoped<AutorServico>();
-            services.AddScoped<CategoriaServico>();
-            services.AddScoped<LivroCategoriaServico>();
-            services.AddScoped<VendaServico>();
+            services.AddScoped<ClienteRepository>();
+            services.AddScoped<CidadeRepository>();
+            services.AddScoped<BairroRepository>();
+            services.AddScoped<RuaRepository>();
+            services.AddScoped<LivroRepository>();
+            services.AddScoped<AutorRepository>();
+            services.AddScoped<CategoriaRepository>();
+            services.AddScoped<LivroCategoriaRepository>();
+            services.AddScoped<VendaRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ConfigDataBase configDataBase)

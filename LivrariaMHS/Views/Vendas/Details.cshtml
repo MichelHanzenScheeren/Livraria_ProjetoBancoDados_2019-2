@@ -1,43 +1,64 @@
-﻿@model LivrariaMHS.Models.Attributes.Venda
+﻿@model Venda
 
-@{
-    ViewData["Title"] = "DETALHES";
-}
+<main role="main">
+    <section class="container" style="margin-top: 50px">
+        <div class="row">
+            <aside class="col-sm-6 offset-sm-3">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title mt-2">Detalhes da Venda</h4>
+                    </header>
+                    <article class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3 my-2">
+                                @Html.DisplayNameFor(model => model.Data)
+                            </dt>
+                            <dd class="col-sm-9 my-2">
+                                @Html.DisplayFor(model => model.Data)
+                            </dd>
+                            <dt class="col-sm-3 my-2">
+                                @Html.DisplayNameFor(model => model.Livro)
+                            </dt>
+                            <dd class="col-sm-9 my-2">
+                                @Html.DisplayFor(model => model.Livro.Titulo)
+                            </dd>
+                            <dt class="col-sm-3 my-2">
+                                @Html.DisplayNameFor(model => model.Cliente)
+                            </dt>
+                            <dd class="col-sm-9 my-2">
+                                @Html.DisplayFor(model => model.Cliente.Nome)
+                            </dd>
+                            <dt class="col-sm-3 my-2"> </dt>
+                            <dd class="col-sm-9 my-2"> </dd>
+                            <dt class="col-sm-3 my-2">
+                                @Html.DisplayNameFor(model => model.Quantidade)
+                            </dt>
+                            <dd class="col-sm-9 my-2">
+                                @Html.DisplayFor(model => model.Quantidade)
+                            </dd>
+                            <dt class="col-sm-3 my-2">
+                                Valor Unitário
+                            </dt>
+                            <dd class="col-sm-9 my-2">
+                                @Html.DisplayFor(model => model.Livro.Preco)
+                            </dd>
+                            <dt class="col-sm-3 my-2 border-bottom"> </dt>
+                            <dd class="col-sm-9 my-2 border-bottom"> </dd>
+                            <dt class="col-sm-3 my-2">
+                                Valor Total
+                            </dt>
+                            <dd class="col-sm-9 my-2">
+                                R$ @(Model.Quantidade * Model.Livro.Preco)
+                            </dd>
+                        </dl>
+                        <br />
+                        <div>
+                            <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning btn-lg btn-block">Editar</a>
+                        </div>
+                    </article>
+                </div>
+            </aside>
+        </div>
+    </section>
+</main>
 
-<p><h1>@ViewData["Title"]</h1></p>
-<hr />
-
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Data)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Livro)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Livro.Titulo)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Cliente)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Cliente.Nome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantidade)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Quantidade)
-        </dd>
-
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning btn-lg">Editar</a> &nbsp;
-    <a asp-action="Index" class="btn btn-info btn-lg">Voltar</a>
-</div>

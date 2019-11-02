@@ -6,86 +6,68 @@
     <title>ASP.NET Core MVC - LivrariaMHS</title>
     <meta name="description" content="Livraria em ASP.NET Core MVC">
     <meta name="author" content="Michel Hanzen Scheeren">
-
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-Darkly.css" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
-              crossorigin="anonymous"
-              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
-    </environment>
+    <!-- Importações padrões -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-Darkly.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css' type='text/css'>
+    <!--Icones Font Awesome-->
+    <link rel="stylesheet" href="~/lib/fontawesome-5.11.2-web/css/all.css">
+    <!--E-commerce-->
     <link rel="stylesheet" href="~/lib/bootstrap-ecommerce-uikit/css/ui.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-ecommerce-uikit/css/responsive.css" media="only screen and (max-width: 1200px)" />
+    <!--Select List Personalizada-->
+    <link rel="stylesheet" href="~/lib/bootstrap-select/select.css">
+    <!--AutoComplete-->
+    <link rel="stylesheet" href="~/lib/jquery-auto-complete/jquery-ui.css">
+    <script src="~/lib/jquery-auto-complete/jquery-3.4.1.js"></script>
+    <script src="~/lib/jquery-auto-complete/jquery-ui.js"></script>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-secondary" style="height: 55px">
-            <a class="navbar-brand" asp-controller="Livros" asp-action="Index"><i class="fas fa-paw"></i>&ensp;WOLF Livraria</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-secondary" style="height: 55px">
+                <a class="navbar-brand" asp-controller="Livros" asp-action="Index"><i class="fas fa-paw"></i>&ensp;WOLF Livraria</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Livros" asp-action="Index"><i class="fas fa-book-open"> </i>&ensp;Livros&emsp;</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Clientes" asp-action="Index"><i class="fas fa-user-circle"></i>&ensp;Clientes&emsp;</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Categorias" asp-action="Index"><i class="fas fa-align-justify"></i>&ensp;Categorias&emsp;</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Vendas" asp-action="Index"><i class="fas fa-money-check-alt"></i>&ensp;Vendas&emsp;</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted" style="height: 20px">
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Livros" asp-action="Index"><i class="fas fa-book-open"> </i>&ensp;Livros&emsp;</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Clientes" asp-action="Index"><i class="fas fa-user-circle"></i>&ensp;Clientes&emsp;</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Categorias" asp-action="Index"><i class="fas fa-align-justify"></i>&ensp;Categorias&emsp;</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Vendas" asp-action="Index"><i class="fas fa-money-check-alt"></i>&ensp;Vendas&emsp;</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
         <div class="container">
-            <aside class="offset-sm-11">
-                &copy; 2019 - Livraria Wolf - <a asp-controller="Home" asp-action="Privacy">Privacidade</a>
-            </aside>
+            <partial name="_CookieConsentPartial" />
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
 
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <footer class="border-top footer text-muted" style="height: 20px">
+            <div class="container">
+                <aside class="offset-sm-11">
+                    &copy; 2019 - Livraria Wolf - <a asp-controller="Home" asp-action="Privacy">Privacidade</a>
+                </aside>
+            </div>
+        </footer>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o">
-        </script>
-    </environment>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <!--JS das máscaras de CPF, Telefone...-->
     <script src="~/lib/jquery-mask-plugin/src/jquery.mask.js" type="text/javascript" asp-append-version="true"></script>
+    <!--JS do select-list personalizado-->
+    <script src="~/lib/bootstrap-select/select.min.js"></script>
     @RenderSection("Scripts", required: false)
-</body>
+    </body>
 </html>

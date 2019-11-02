@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using LivrariaMHS.Data.Repositories;
 using LivrariaMHS.Models;
 using LivrariaMHS.Models.Attributes;
-using LivrariaMHS.Models.Service;
 using LivrariaMHS.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +13,11 @@ namespace LivrariaMHS.Controllers
 {
     public class VendasController : Controller
     {
-        private readonly VendaServico _vendaServico;
-        private readonly ClienteServico _clienteServico;
-        private readonly LivroServico _livroServico;
+        private readonly VendaRepository _vendaServico;
+        private readonly ClienteRepository _clienteServico;
+        private readonly LivroRepository _livroServico;
 
-        public VendasController(VendaServico vendaServico, ClienteServico clienteServico, LivroServico livroServico)
+        public VendasController(VendaRepository vendaServico, ClienteRepository clienteServico, LivroRepository livroServico)
         {
             _vendaServico = vendaServico;
             _clienteServico = clienteServico;

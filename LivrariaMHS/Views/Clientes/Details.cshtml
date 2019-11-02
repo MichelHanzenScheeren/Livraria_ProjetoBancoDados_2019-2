@@ -1,88 +1,87 @@
-﻿@model LivrariaMHS.Models.Attributes.Cliente
+﻿@model Cliente
 
-@{
-    ViewData["Title"] = "DETALHES DO CLIENTE";
-}
-
-<p><h1>@ViewData["Title"]</h1></p>
-<hr />
-
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Sexo)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Sexo)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CPF)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CPF)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DataNascimento)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DataNascimento)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefone)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Telefone)
-        </dd>
-        <dt class="col-sm-2"> </dt>
-        <dd class="col-sm-10"> </dd>
-        <dt class="col-sm-2"> </dt>
-        <dd class="col-sm-10"> </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Rua.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Rua.Nome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Numero)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Numero)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Bairro.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Bairro.Nome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Cidade.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Cidade.Nome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Cidade.Estado)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Cidade.Estado)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning btn-lg">Editar</a> &nbsp;
-    <a asp-action="Index" class="btn btn-info btn-lg">Voltar</a>
-</div>
+<main role="main">
+    <section class="container" style="margin-top: 50px">
+        <div class="row">
+            <aside class="col-sm-6 offset-sm-3">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title mt-2">Detalhes</h4>
+                    </header>
+                    <article class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.Nome)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.Nome)
+                            </dd>
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.Sexo)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.Sexo)
+                            </dd>
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.Email)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.Email)
+                            </dd>
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.CPF)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.CPF)
+                            </dd>
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.DataNascimento)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.DataNascimento)
+                            </dd>
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.Telefone)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.Telefone)
+                            </dd>
+                        </dl>
+                        <hr />
+                        <h4>Endereço</h4>
+                        <dl class="row">
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.Rua.Nome)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.Rua.Nome)
+                            </dd>
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.Numero)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.Numero)
+                            </dd>
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.Bairro.Nome)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.Bairro.Nome)
+                            </dd>
+                            <dt class="col-sm-4 my-2  text-uppercase">
+                                @Html.DisplayNameFor(model => model.Cidade.Nome)
+                            </dt>
+                            <dd class="col-sm-8 my-2">
+                                @Html.DisplayFor(model => model.Cidade.Nome) - @Html.DisplayFor(model => model.Cidade.Estado)
+                            </dd>
+                        </dl>
+                        <div>
+                            <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning btn-lg">Editar</a> &nbsp;
+                            <a asp-action="Index" class="btn btn-info btn-lg">Voltar</a>
+                        </div>
+                    </article>
+                </div>
+            </aside>
+        </div>
+    </section>
+</main>

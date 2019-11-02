@@ -1,24 +1,44 @@
-﻿@model LivrariaMHS.Models.Attributes.Categoria
+﻿@model CategoriaViewModel
 
-@{
-    ViewData["Title"] = "DETALHES";
-}
-
-<p><h1>@ViewData["Title"]</h1></p>
-<hr />
-
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning btn-lg">Editar</a> &nbsp;
-    <a asp-action="Index" class="btn btn-info btn-lg">Voltar</a>
-</div>
+<main role="main">
+    <section class="container" style="margin-top: 50px">
+        <div class="row">
+            <aside class="col-sm-7 offset-sm-5-24">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title mt-2">Detalhes</h4>
+                    </header>
+                    <article class="card-body">
+                        <dl class="row border-bottom">
+                            <dt class="col-sm-3 text-uppercase">
+                                &emsp; @Html.DisplayNameFor(model => model.Categoria):
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.Categoria.Nome)
+                            </dd>
+                        </dl>
+                        <hr />
+                        <dl class="list-group">
+                            <dt class="text-uppercase title-bg">Livros</dt>
+                            @if (!Model.LivrosCategorias.Any()){
+                                <dd class="text-warning list-group-item">
+                                    Nenhum livro associado...
+                                </dd>
+                            }
+                            @foreach (var item in Model.LivrosCategorias){
+                                <dd class="list-group-item">
+                                    @Html.DisplayFor(modelItem => item.Livro.Titulo), De @Html.DisplayFor(modelItem => item.Livro.Autor.Nome)
+                                    &emsp;<a asp-controller="Livros" asp-action="Details" asp-route-id="@item.Livro.ID" class="float-right"> Detalhes </a>
+                                </dd>
+                            }
+                        </dl>
+                        <br />
+                        <div>
+                            <a asp-action="Index" class="btn btn-info btn-lg float-right">Voltar</a>
+                        </div>
+                    </article>
+                </div>
+            </aside>
+        </div>
+    </section>
+</main>

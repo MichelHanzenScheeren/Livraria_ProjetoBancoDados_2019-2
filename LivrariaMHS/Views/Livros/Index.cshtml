@@ -1,57 +1,57 @@
-﻿@model IEnumerable<LivrariaMHS.Models.Attributes.Livro>
+﻿@model IEnumerable<Livro>
 @using System.IO
-
 @{
     ViewData["Title"] = "LIVROS";
 }
 
-    <main role="main">
-        <hr />
-        <div class="container">
-            <h1>@ViewData["Title"]</h1>
-            <form asp-action="Index" class="form form-inline">
-                <input class="form form-control col-4 mr-sm-n5" type="text" name="pesquisa" id="pesquisa" placeholder="BUSCAR LIVRO" value=@ViewData["pesquisa"]>
-                <button class="btn form-control btn-warning btn-group my-4 col-1-24 mr-sm-3 " type="submit"><i class="fa fa-search"></i></button>
-                <a asp-action="Create" class="btn btn-success col-3-24 mr-sm-3"> Novo</a>
-                <a asp-action="Administrar" class="btn btn-info col-3-24">Preço</a>
-            </form>
-        </div><hr />
-        <div class="container" id="code_prod_complex">
-            @if (@TempData["Concluido"] != null)
+<main role="main">
+    <hr />
+    <div class="container">
+        <h1>@ViewData["Title"]</h1>
+        <form asp-action="Index" class="form form-inline">
+            <input onkeydown="atualizarDefinicao()" class="form form-control col-4 mr-sm-n5" type="text" name="pesquisa" id="pesquisa" placeholder="BUSCAR LIVRO" value=@ViewData["pesquisa"]>
+            <button class="btn form-control btn-warning btn-group my-4 col-1-24 mr-sm-3 " type="submit"><i class="fa fa-search"></i></button>
+            <a asp-action="Create" class="btn btn-facebook col-3-24 mr-sm-3"> Novo</a>
+            <a asp-action="Administrar" class="btn btn-success col-3-24">Preço</a>
+        </form>
+    </div><hr />
+    <div class="container">
+        @if (@TempData["Concluido"] != null)
+        {
+            <span class="text-success col-2">@TempData["Concluido"] </span><hr />
+        }
+        <div class="row">
+            @foreach (var item in Model)
             {
-                <span class="text-success col-2">@TempData["Concluido"] </span><hr />
-            }
-            <div class="row">
-                @foreach (var item in Model)
-                {
-                    <div class="col-md-4">
-                        <figure class="card card-product">
-                            <div class="img-wrap"><img src="@Url.Action("GetFoto", "Livros", new { id = item.ID })" style="width:100%;height:100%"></div>
-                            <figcaption class="info-wrap">
-                                <h4 class="title text-uppercase">@Html.DisplayFor(modelItem => item.Titulo)</h4>
-                                <p class="desc">@Html.DisplayFor(modelItem => item.Autor.Nome)</p>
-                                <div class="rating-wrap">
-
-                                    <div class="label-rating">@Html.DisplayFor(modelItem => item.Edicao)ª  edição  </div>
-                                    <div class="label-rating">@Html.DisplayFor(modelItem => item.Paginas) páginas</div>
-                                </div>
-                            </figcaption>
-                            <div class="bottom-wrap">
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger float-right">Apagar</a>
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-warning float-right mr-sm-2">Editar</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary float-right  mr-sm-2">Detalhes</a>
-                                <div class="price-wrap h5">
-                                    <span class="price-new">R$@Html.DisplayFor(modelItem => item.Preco)</span>
-                                </div>
+                <div class="col-md-4">
+                    <figure class="card card-product">
+                        <div class="img-wrap"><img src="@Url.Action("GetFoto", "Livros", new { id = item.ID })" style="width:100%;height:100%"></div>
+                        <figcaption class="info-wrap">
+                            <h6 class="title text-uppercase">@Html.DisplayFor(modelItem => item.Titulo)</h6>
+                            <p class="desc">@Html.DisplayFor(modelItem => item.Autor.Nome)</p>
+                            <div class="rating-wrap">
+                                <div class="label-rating">@Html.DisplayFor(modelItem => item.Edicao)ª  edição  </div>
+                                <div class="label-rating">@Html.DisplayFor(modelItem => item.Paginas) páginas</div>
                             </div>
-                        </figure>
+                        </figcaption>
+                        <div class="bottom-wrap">
+                            <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger float-right">Apagar</a>
+                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-warning float-right mr-sm-2">Editar</a>
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary float-right  mr-sm-2">Detalhes</a>
+                            <div class="price-wrap h5">
+                                <span class="price-new">R$@Html.DisplayFor(modelItem => item.Preco)</span>
+                            </div>
+                        </div>
+                    </figure>
 
-                    </div>
-                }
-            </div>
-            @if (!Model.Any())
-            {
-                <span class="text-danger col-2">Nenhum Livro Encontrado... </span><hr />
+                </div>
             }
         </div>
-    </main>
+        @if (!Model.Any())
+        {
+            <span class="text-danger col-2">Nenhum Livro Encontrado... </span>
+            <hr />
+        }
+    </div>
+</main>
+

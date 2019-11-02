@@ -3,20 +3,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LivrariaMHS.Models;
 using LivrariaMHS.Models.Attributes;
-using LivrariaMHS.Models.Service;
 using System.Diagnostics;
+using LivrariaMHS.Data.Repositories;
 
 namespace LivrariaMHS.Controllers
 {
     public class ClientesController : Controller
     {
-        private readonly ClienteServico _clienteServico;
-        private readonly RuaServico _ruaServico;
-        private readonly BairroServico _bairroServico;
-        private readonly CidadeServico _cidadeServico;
+        private readonly ClienteRepository _clienteServico;
+        private readonly RuaRepository _ruaServico;
+        private readonly BairroRepository _bairroServico;
+        private readonly CidadeRepository _cidadeServico;
 
-        public ClientesController(ClienteServico clienteServico, 
-            RuaServico ruaServico, BairroServico bairroServico, CidadeServico cidadeServico)
+        public ClientesController(ClienteRepository clienteServico, 
+            RuaRepository ruaServico, BairroRepository bairroServico, CidadeRepository cidadeServico)
         {
             _clienteServico = clienteServico;
             _ruaServico = ruaServico;

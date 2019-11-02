@@ -1,76 +1,79 @@
-﻿@model IEnumerable<LivrariaMHS.Models.Attributes.Venda>
+﻿@model IEnumerable<Venda>
 
 @{
     ViewData["Title"] = "VENDAS";
 }
 
-<p><h1>@ViewData["Title"]</h1></p>
-
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <form asp-action="Index" class="form form-inline">
-            <input class="form form-control mr-sm-2 col-4" type="text" name="pesquisa" placeholder="BUSCAR VENDA " value=@ViewData["pesquisa"]>
-            <input class="form form-control mr-sm-2 col-3" type="date" name="data" value=@ViewData["date"]>
-            <button class="float-left btn btn-warning my-4 col-2 mr-sm-4" type="submit">Filtrar</button>
-            <a asp-action="Create" class="btn btn-success mr-sm-5 col-2">Registrar Venda</a>
-        </form>
-    </div>
-    <div class="panel-body">
-        <table class="table table-hover">
-            <thead class="table-secondary">
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Data)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Livro)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Cliente)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Quantidade)
-                    </th>
-                    <th>
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="table-dark">
-                @foreach (var item in Model)
-                {
+<main>
+    <div class="panel panel-primary">
+        <hr />
+        <h1>@ViewData["Title"]</h1>
+        <div class="panel-heading">
+            <form asp-action="Index" class="form form-inline">
+                <input type="text" class="form form-control col-6-24 mr-sm-3 my-4"  name="pesquisa" placeholder="BUSCAR VENDA " value=@ViewData["pesquisa"]>
+                <input type="date" class="form form-control col-4-24 mr-sm-3"  name="data" value=@ViewData["date"]>
+                <button type="submit" class="btn btn-warning col-4-24 mr-sm-5" >Filtrar</button>
+                <a asp-action="Create" class="btn btn-success col-4-24 mr-sm-3">Novo</a>
+                <a asp-action="Informacoes" class="btn btn-info col-4-24">Informações</a>
+            </form>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="table-secondary">
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Data)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Livro.Titulo)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Cliente.Nome)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Quantidade)
-                        </td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@item.ID" class="badge badge-pill badge-info">Detalhes</a> /
-                            <a asp-action="Edit" asp-route-id="@item.ID" class="badge badge-pill badge-info">Editar</a> /
-                            <a asp-action="Delete" asp-route-id="@item.ID" class="badge badge-pill badge-info">Deletar</a>
-                        </td>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Data)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Livro)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Cliente)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Quantidade)
+                        </th>
+                        <th>
+                        </th>
                     </tr>
-                }
-                @if (!Model.Any())
-                {
-                    <tr>
-                        <td class="text-danger" colspan="7"> NENHUMA VENDA LOCALIZADA ... </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="panel-primary">
-        <br />
-        <div class="form-group">
-            <a asp-action="Informacoes" class="col btn btn-info col-3 float-right">Informações</a>
+                </thead>
+                <tbody class="table-dark">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Data)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Livro.Titulo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Cliente.Nome)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Quantidade)
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="badge badge-pill badge-info">Detalhes</a> /
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="badge badge-pill badge-info">Editar</a> /
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="badge badge-pill badge-info">Deletar</a>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td class="text-danger" colspan="7"> NENHUMA VENDA LOCALIZADA ... </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-primary">
+            <br />
+            <div class="form-group">
+                
+            </div>
         </div>
     </div>
-</div>
+</main>

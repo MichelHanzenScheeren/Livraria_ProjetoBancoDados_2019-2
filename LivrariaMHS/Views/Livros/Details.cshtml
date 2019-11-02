@@ -1,4 +1,4 @@
-﻿@model LivrariaMHS.Models.Attributes.Livro
+﻿@model Livro
 
 <main role="main">
     <section class="container" style="margin-top: 50px">
@@ -43,7 +43,7 @@
                                 @Html.DisplayNameFor(model => model.Edicao)
                             </dt>
                             <dd class="col-sm-8 my-2">
-                                @Html.DisplayFor(model => model.Edicao)
+                                @Html.DisplayFor(model => model.Edicao)ª
                             </dd>
                             <dt class="col-sm-4 my-2  text-uppercase">
                                 @Html.DisplayNameFor(model => model.Ano)
@@ -68,9 +68,6 @@
                         <div class="form-row">
                             <div class="col form-group">
                                 <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning btn-lg form-control">Editar</a>
-                            </div>
-                            <div class="col form-group">
-                                <a asp-action="Index" class="btn btn-info btn-lg form-control">Voltar</a>
                             </div>
                         </div>
                     </article>

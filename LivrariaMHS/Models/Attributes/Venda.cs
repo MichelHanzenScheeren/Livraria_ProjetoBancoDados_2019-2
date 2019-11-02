@@ -27,9 +27,11 @@ namespace LivrariaMHS.Models.Attributes
         [ValidarNumero(0)]
         public decimal ValorUnitario { get; set; }
 
+        [Required(ErrorMessage = "Preenchimento obrigatório!")]
         public int ClienteID { get; set; }
         public virtual Cliente Cliente { get; set; }
 
+        [Required(ErrorMessage = "Preenchimento obrigatório!")]
         public int LivroID { get; set; }
         public virtual Livro Livro { get; set; }
     }
