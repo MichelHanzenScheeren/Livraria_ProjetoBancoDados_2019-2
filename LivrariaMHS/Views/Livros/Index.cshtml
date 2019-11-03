@@ -25,9 +25,17 @@
             {
                 <div class="col-md-4">
                     <figure class="card card-product">
-                        <div class="img-wrap"><img src="@Url.Action("GetFoto", "Livros", new { id = item.ID })" style="width:100%;height:100%"></div>
+                        <div class="img-big-wrap"><img src="@Url.Action("GetFoto", "Livros", new { id = item.ID })" style="width:100%;height:100%"></div>
                         <figcaption class="info-wrap">
-                            <h6 class="title text-uppercase">@Html.DisplayFor(modelItem => item.Titulo)</h6>
+                            <h6 class="title">
+                                @if (item.Titulo.Length <= 45) {
+                                    @Html.DisplayFor(modelItem => item.Titulo)
+                                } else {
+                                    item.Titulo = item.Titulo.Substring(0, 43) + "...";
+                                    @Html.DisplayFor(modelitem => item.Titulo)
+                                     
+                                }
+                            </h6>
                             <p class="desc">@Html.DisplayFor(modelItem => item.Autor.Nome)</p>
                             <div class="rating-wrap">
                                 <div class="label-rating">@Html.DisplayFor(modelItem => item.Edicao)ª  edição  </div>

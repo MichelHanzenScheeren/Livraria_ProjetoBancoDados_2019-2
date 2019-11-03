@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using LivrariaMHS.Data.Repositories;
+using System.Net;
 
 namespace LivrariaMHS.Controllers
 {
@@ -84,14 +85,30 @@ namespace LivrariaMHS.Controllers
 
         private void ConfigurarImagem(Livro livro, IFormFile imagem)
         {
-            if (imagem == null) 
-                return;
-
             MemoryStream ms = new MemoryStream();
-            imagem.OpenReadStream().CopyTo(ms);
-            livro.Nome = imagem.FileName;
+            if (imagem == null)
+            {
+                //return;
+                try
+                {
+                    FileStream Stream = new FileStream(Directory.GetCurrentDirectory() + "\\wwwroot\\img\\indisponivel.png", FileMode.Open, FileAccess.Read);
+                    Stream.CopyTo(ms);
+                    livro.Nome = "Indisponivel.png";
+                    livro.ContentType = "image/png";
+                    string teste = Directory.GetCurrentDirectory();
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                imagem.OpenReadStream().CopyTo(ms);
+                livro.Nome = imagem.FileName;
+                livro.ContentType = imagem.ContentType;
+            }
             livro.Dados = ms.ToArray();
-            livro.ContentType = imagem.ContentType;
         }
 
         public async Task<FileContentResult> GetFoto(int id)
