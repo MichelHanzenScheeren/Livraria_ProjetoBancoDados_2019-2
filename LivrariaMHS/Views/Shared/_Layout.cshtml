@@ -1,26 +1,29 @@
 ﻿<!DOCTYPE html>
 <html  lang="pt-br">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ASP.NET Core MVC - LivrariaMHS</title>
-    <meta name="description" content="Livraria em ASP.NET Core MVC">
-    <meta name="author" content="Michel Hanzen Scheeren">
-    <!-- Importações padrões -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-Darkly.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <!--Icones Font Awesome-->
-    <link rel="stylesheet" href="~/lib/fontawesome-5.11.2-web/css/all.css">
-    <!--E-commerce-->
-    <link rel="stylesheet" href="~/lib/bootstrap-ecommerce-uikit/css/ui.css" />
-    <link rel="stylesheet" href="~/lib/bootstrap-ecommerce-uikit/css/responsive.css" media="only screen and (max-width: 1200px)" />
-    <!--Select List Personalizada-->
-    <link rel="stylesheet" href="~/lib/bootstrap-select/select.css">
-    <!--AutoComplete-->
-    <link rel="stylesheet" href="~/lib/jquery-auto-complete/jquery-ui.css">
-    <script src="~/lib/jquery-auto-complete/jquery-3.4.1.js"></script>
-    <script src="~/lib/jquery-auto-complete/jquery-ui.js"></script>
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ASP.NET Core MVC - LivrariaMHS</title>
+        <meta name="description" content="Livraria em ASP.NET Core MVC">
+        <meta name="author" content="Michel Hanzen Scheeren">
+        <!-- Importações padrões -->
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-Darkly.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <!--Icones Font Awesome-->
+        <link rel="stylesheet" href="~/lib/fontawesome-5.11.2-web/css/all.css">
+        <!--E-commerce-->
+        <link rel="stylesheet" href="~/lib/bootstrap-ecommerce-uikit/css/ui.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap-ecommerce-uikit/css/responsive.css" media="only screen and (max-width: 1200px)" />
+        <!--AutoComplete-->
+        <link rel="stylesheet" href="~/lib/jquery-auto-complete/jquery-ui.css">
+        <script src="~/lib/jquery-auto-complete/jquery-3.4.1.js"></script>
+        <script src="~/lib/jquery-auto-complete/jquery-ui.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <!--Select List Personalizada-->
+        <link rel="stylesheet" href="~/lib/bootstrap-select/select.css">
+        <script src="~/lib/bootstrap-select/select.min.js"></script>
+    </head>
     <body>
         <header>
             <nav class="navbar navbar-expand-lg navbar-dark bg-secondary" style="height: 55px">
@@ -54,7 +57,6 @@
                 @RenderBody()
             </main>
         </div>
-
         <footer class="border-top footer text-muted" style="height: 20px">
             <div class="container">
                 <aside class="offset-sm-11">
@@ -62,12 +64,8 @@
                 </aside>
             </div>
         </footer>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
         <!--JS das máscaras de CPF, Telefone...-->
-    <script src="~/lib/jquery-mask-plugin/src/jquery.mask.js" type="text/javascript" asp-append-version="true"></script>
-    <!--JS do select-list personalizado-->
-    <script src="~/lib/bootstrap-select/select.min.js"></script>
-    @RenderSection("Scripts", required: false)
+        <script src="~/lib/jquery-mask-plugin/src/jquery.mask.js"></script>
+        @RenderSection("Scripts", required: false)
     </body>
 </html>
