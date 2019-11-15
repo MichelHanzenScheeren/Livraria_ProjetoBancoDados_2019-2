@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using LivrariaMHS.Data.Repositories;
 using System.Net;
+using OpenCvSharp;
 
 namespace LivrariaMHS.Controllers
 {
@@ -88,7 +89,6 @@ namespace LivrariaMHS.Controllers
             MemoryStream ms = new MemoryStream();
             if (imagem == null)
             {
-                //return;
                 try
                 {
                     FileStream Stream = new FileStream(Directory.GetCurrentDirectory() + "\\wwwroot\\img\\indisponivel.png", FileMode.Open, FileAccess.Read);
@@ -97,6 +97,7 @@ namespace LivrariaMHS.Controllers
                     livro.ContentType = "image/png";
                     string teste = Directory.GetCurrentDirectory();
                     Stream.Dispose();
+                    livro.Dados = ms.ToArray();
                 }
                 catch (Exception)
                 {
@@ -106,10 +107,13 @@ namespace LivrariaMHS.Controllers
             else
             {
                 imagem.OpenReadStream().CopyTo(ms);
+                Mat mat = Mat.FromImageData(ms.ToArray());
+                Cv2.Resize(mat, mat, new Size { Height = 450, Width = 350 });
                 livro.Nome = imagem.FileName;
                 livro.ContentType = imagem.ContentType;
+                livro.Dados = mat.ToBytes();
             }
-            livro.Dados = ms.ToArray();
+            
         }
 
         public async Task<FileContentResult> GetFoto(int id)
