@@ -96,6 +96,7 @@ namespace LivrariaMHS.Controllers
                     livro.Nome = "Indisponivel.png";
                     livro.ContentType = "image/png";
                     string teste = Directory.GetCurrentDirectory();
+                    Stream.Dispose();
                 }
                 catch (Exception)
                 {
@@ -185,9 +186,7 @@ namespace LivrariaMHS.Controllers
             {
                 await VerificarAlteracoesCategorias(id, categoriasID);
                 await VerificarCadastroAutor(livro);
-                if (imagem != null)
-                    ConfigurarImagem(livro, imagem);
-
+                ConfigurarImagem(livro, imagem);
                 await _livroServico.UpdateAsync(livro);
                 TempData["Concluido"] = "Livro Editado!";
                 return RedirectToAction(nameof(Index));
