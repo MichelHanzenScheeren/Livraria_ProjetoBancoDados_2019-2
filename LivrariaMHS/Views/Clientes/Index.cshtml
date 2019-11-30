@@ -10,8 +10,7 @@
         <h1>@ViewData["Title"]</h1>
         <div class="panel-heading">
             <form asp-action="Index" class="form form-inline">
-                <input class="form form-control float-left mr-sm-n5 col-4" type="text" name="pesquisa" id="pesquisa" placeholder="PESQUISAR CLIENTE" value=@ViewData["pesquisa"]>
-                <button class="btn form-control btn-warning btn-group my-4 col-1-24 mr-sm-3" type="submit"><i class="fa fa-search"></i></button>
+                <input onkeyup="ajaxTest();" class="form form-control float-left mr-sm-n5 col-4" type="text" name="pesquisa" id="pesquisa" placeholder="PESQUISAR CLIENTE" value=@ViewData["pesquisa"]>
                 <a asp-action="Create" class="btn btn-facebook col-2">Novo</a>
             </form>
         </div>
@@ -21,60 +20,29 @@
                 <p><span class="text-success col-2">@TempData["Concluido"] </span></p>
             }
         </div>
-        <table class="table">
-            <thead class="table-secondary">
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Nome)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Sexo)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Telefone)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.CPF)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Email)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody class="table-dark">
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Nome)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Sexo)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Telefone)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CPF)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.ID" class="badge badge-pill badge-info">Editar</a> /
-                            <a asp-action="Details" asp-route-id="@item.ID" class="badge badge-pill badge-info">Detalhes</a> /
-                            <a asp-action="Delete" asp-route-id="@item.ID" class="badge badge-pill badge-info">Apagar</a>
-                        </td>
-                    </tr>
-                }
-                @if (!Model.Any())
-                {
-                    <tr>
-                        <td class="text-danger" colspan="7"> NENHUM CLIENTE ENCONTRADO... </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div id="divClientes">
+            @{ await Html.RenderPartialAsync("_clientPartial", Model);}
+        </div>
     </div>
 </main>
+
+@section Scripts {
+    <script type="text/javascript">
+        function ajaxTest() {
+            console.log("Entered method");
+            $.ajax({
+                type: "get",
+                url: '/ClientesController/PesquisarClientes?termo=' + $("#pesquisa").val(),
+                contentType: "application/json; charset=utf-8",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                dataType: "html",
+            }).done(function (data) {
+                console.log(data.result);
+                $('#divClientes').html(data);
+            })
+        }
+    </script>
+}

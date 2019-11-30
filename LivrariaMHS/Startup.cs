@@ -32,7 +32,7 @@ namespace LivrariaMHS
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             string connectionString = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=LivrariaMHS;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";

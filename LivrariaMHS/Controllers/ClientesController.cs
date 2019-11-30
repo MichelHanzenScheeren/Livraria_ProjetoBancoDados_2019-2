@@ -5,6 +5,7 @@ using LivrariaMHS.Models;
 using LivrariaMHS.Models.Attributes;
 using System.Diagnostics;
 using LivrariaMHS.Data.Repositories;
+using System.Linq;
 
 namespace LivrariaMHS.Controllers
 {
@@ -27,19 +28,6 @@ namespace LivrariaMHS.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _clienteServico.GetAllAsync());
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string pesquisa)
-        {
-            if (!string.IsNullOrEmpty(pesquisa))
-            {
-                ViewData["pesquisa"] = pesquisa;
-                return View(await _clienteServico.FindAsync(x => x.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.CPF.Contains(pesquisa)));
-            }
-            else
-                return View(await _clienteServico.GetAllAsync());
         }
 
         public IActionResult Create()
@@ -124,13 +112,11 @@ namespace LivrariaMHS.Controllers
         {
             if (!ModelState.IsValid)
                 return View(cliente);
-
             if (id != cliente.ID)
                 return RedirectToAction(nameof(Error), new { message = "O ID Informado não corresponde ao ID do cliente!" });
 
             try
             {
-
                 await VerificarEndereco(cliente);
                 await _clienteServico.UpdateAsync(cliente);
                 TempData["Concluido"] = "Cadastro Editado!";
@@ -148,7 +134,6 @@ namespace LivrariaMHS.Controllers
                 return RedirectToAction(nameof(Error), new { message = "ID Inválido!" });
 
             var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
-
             if (cliente == null)
                 return RedirectToAction(nameof(Error), new { message = "Cliente não encontrado!" });
 
@@ -173,6 +158,17 @@ namespace LivrariaMHS.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModelError);
+        }
+
+        [ValidateAntiForgeryToken]
+        [Route("/ClientesController/PesquisarClientes")]
+        [HttpGet]
+        public async Task<IActionResult> PesquisarClientes(string termo)
+        {
+            if (!string.IsNullOrEmpty(termo))
+                return PartialView("_clientPartial", (await _clienteServico.FindAsync(x => x.Nome.Contains(termo, StringComparison.OrdinalIgnoreCase) || x.CPF.Contains(termo, StringComparison.OrdinalIgnoreCase))).OrderBy(x => x.Nome));
+            else
+                return PartialView("_clientPartial", (await _clienteServico.GetAllAsync()).OrderBy(x => x.Nome));
         }
     }
 }

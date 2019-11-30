@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<Livro>
-@using System.IO
 @{
     ViewData["Title"] = "LIVROS";
 }
@@ -9,57 +8,33 @@
     <div class="container">
         <h1>@ViewData["Title"]</h1>
         <form asp-action="Index" class="form form-inline">
-            <input onkeydown="atualizarDefinicao()" class="form form-control col-4 mr-sm-n5" type="text" name="pesquisa" id="pesquisa" placeholder="BUSCAR LIVRO" value=@ViewData["pesquisa"]>
-            <button class="btn form-control btn-warning btn-group my-4 col-1-24 mr-sm-3 " type="submit"><i class="fa fa-search"></i></button>
+            <input onkeyup="ajaxTest();" class="form form-control col-4 mr-sm-3" type="text" name="pesquisa" id="pesquisa" placeholder="BUSCAR LIVRO" value=@ViewData["pesquisa"]>
             <a asp-action="Create" class="btn btn-facebook col-3-24 mr-sm-3"> Novo</a>
             <a asp-action="Administrar" class="btn btn-success col-3-24">Preço</a>
         </form>
     </div><hr />
-    <div class="container">
-        @if (@TempData["Concluido"] != null)
-        {
-            <span class="text-success col-2">@TempData["Concluido"] </span><hr />
-        }
-        <div class="row">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-4">
-                    <figure class="card card-product">
-                        <div class="img-big-wrap"><img src="@Url.Action("GetFoto", "Livros", new { id = item.ID })" style="width:100%;height:100%"></div>
-                        <figcaption class="info-wrap">
-                            <h6 class="title">
-                                @if (item.Titulo.Length <= 45) {
-                                    @Html.DisplayFor(modelItem => item.Titulo)
-                                } else {
-                                    item.Titulo = item.Titulo.Substring(0, 43) + "...";
-                                    @Html.DisplayFor(modelitem => item.Titulo)
-                                     
-                                }
-                            </h6>
-                            <p class="desc">@Html.DisplayFor(modelItem => item.Autor.Nome)</p>
-                            <div class="rating-wrap">
-                                <div class="label-rating">@Html.DisplayFor(modelItem => item.Edicao)ª  edição  </div>
-                                <div class="label-rating">@Html.DisplayFor(modelItem => item.Paginas) páginas</div>
-                            </div>
-                        </figcaption>
-                        <div class="bottom-wrap">
-                            <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger float-right">Apagar</a>
-                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-warning float-right mr-sm-2">Editar</a>
-                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary float-right  mr-sm-2">Detalhes</a>
-                            <div class="price-wrap h5">
-                                <span class="price-new">R$@Html.DisplayFor(modelItem => item.Preco)</span>
-                            </div>
-                        </div>
-                    </figure>
-
-                </div>
-            }
-        </div>
-        @if (!Model.Any())
-        {
-            <span class="text-danger col-2">Nenhum Livro Encontrado... </span>
-            <hr />
-        }
+    <div id="divLivros">
+        @{ await Html.RenderPartialAsync("_indexPartial", Model);}
     </div>
 </main>
 
+@section Scripts {
+    <script type="text/javascript">
+        function ajaxTest() {
+            console.log("Entered method");
+            $.ajax({
+                type: "get",
+                url: '/LivrosController/Pesquisar?termo=' + $("#pesquisa").val(),
+                contentType: "application/json; charset=utf-8",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                dataType: "html",
+            }).done(function (data) {
+                console.log(data.result);
+                $('#divLivros').html(data);
+            })
+        }
+    </script>
+}

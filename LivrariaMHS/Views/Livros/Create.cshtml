@@ -1,11 +1,4 @@
 ﻿@model LivroViewModel
-<script>
-    function alterarImagem(componente) {
-        var elemento = document.getElementById("mostrarImagem");//.style.display = "none";
-        elemento.src = window.URL.createObjectURL(componente.files[0]);
-        elemento.style.display = "block"
-    }
-</script>
 
 <main role="main">
     <section class="container" style="margin-top: 50px;">
@@ -94,6 +87,12 @@
 </main>
 
 <script>
+    function alterarImagem(componente) {
+        var elemento = document.getElementById("mostrarImagem");//.style.display = "none";
+        elemento.src = window.URL.createObjectURL(componente.files[0]);
+        elemento.style.display = "block"
+    }
+
     $(document).ready(function () {
         $("#autoCompleteAutor").autocomplete({
             source: function (request, response) {

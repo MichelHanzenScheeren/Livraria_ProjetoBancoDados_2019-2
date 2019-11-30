@@ -38,18 +38,6 @@ namespace LivrariaMHS.Controllers
         {
             return View((await _livroServico.GetAllAsync("Autor")).OrderBy(x => x.Titulo));
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string pesquisa)
-        {
-            if (!string.IsNullOrEmpty(pesquisa))
-            {
-                ViewData["pesquisa"] = pesquisa;
-                return View(await _livroServico.FindAsync(x => x.Titulo.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Autor.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase), "Autor"));
-            }
-            else
-                return View((await _livroServico.GetAllAsync("Autor")).OrderBy(x => x.Titulo));
-        }
 
         public async Task<IActionResult> Create()
         {
@@ -279,6 +267,17 @@ namespace LivrariaMHS.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModelError);
+        }
+
+        [ValidateAntiForgeryToken]
+        [Route("/LivrosController/Pesquisar")]
+        [HttpGet]
+        public async Task<IActionResult> Pesquisar(string termo)
+        {
+            if (!string.IsNullOrEmpty(termo))
+                return PartialView("_indexPartial", (await _livroServico.FindAsync(x => x.Titulo.Contains(termo, StringComparison.OrdinalIgnoreCase) || x.Autor.Nome.Contains(termo, StringComparison.OrdinalIgnoreCase), "Autor")).OrderBy(x => x.Titulo));
+            else
+                return PartialView("_indexPartial", (await _livroServico.GetAllAsync("Autor")).OrderBy(x => x.Titulo));
         }
     }
 }
