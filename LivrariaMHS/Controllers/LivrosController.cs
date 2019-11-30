@@ -4,18 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using LivrariaMHS.Models;
-using LivrariaMHS.Models.Attributes;
-using LivrariaMHS.Models.Excpetions;
 using System.Diagnostics;
-using LivrariaMHS.Models.ViewModels;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-using LivrariaMHS.Data.Repositories;
-using System.Net;
+using Data.Repositories;
 using OpenCvSharp;
+using Model.ViewModels;
+using Model.Attributes;
+using Model.Excpetions;
 
 namespace LivrariaMHS.Controllers
 {
@@ -60,14 +56,14 @@ namespace LivrariaMHS.Controllers
             }
             await VerificarCadastroAutor(livro);
             ConfigurarImagem(livro, imagem);
-            await _livroServico.InsertAsync(livro);
+            await _livroServico.AddAsync(livro);
             TempData["Concluido"] = "Livro Cadastrado!";
 
             int idLivro = (await _livroServico.LastAsync()).ID;
             foreach (var item in categoriasID)
             {
                 LivroCategoria livroCategoria = new LivroCategoria() { LivroID = idLivro, CategoriaID = item };
-                await _livroCategoriaServico.InsertAsync(livroCategoria);
+                await _livroCategoriaServico.AddAsync(livroCategoria);
             }
             return RedirectToAction(nameof(Index));
         }
@@ -106,7 +102,7 @@ namespace LivrariaMHS.Controllers
 
         public async Task<FileContentResult> GetFoto(int id)
         {
-            Livro livro = await _livroServico.FindByIdAsync(x => x.ID == id);
+            Livro livro = await _livroServico.FindFirstAsync(x => x.ID == id);
             if (livro != null)
             {
                 return File(livro.Dados, livro.ContentType);
@@ -119,7 +115,7 @@ namespace LivrariaMHS.Controllers
             Autor autor = await _autorServico.FindFirstAsync(x => x.Nome == livro.Autor.Nome);
             if (autor is null)
             {
-                await _autorServico.InsertAsync(livro.Autor);
+                await _autorServico.AddAsync(livro.Autor);
                 autor = await _autorServico.LastAsync();
             }
             livro.AutorID = autor.ID;
@@ -130,7 +126,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro Inválido!" });
 
-            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias", "LivrosCategorias.Categoria");
+            var livro = await _livroServico.FindFirstAsync(x => x.ID == id, "Autor", "LivrosCategorias", "LivrosCategorias.Categoria");
 
             if (livro == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro não encontrado!" });
@@ -143,7 +139,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro Inválido!" });
 
-            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias");
+            var livro = await _livroServico.FindFirstAsync(x => x.ID == id, "Autor", "LivrosCategorias");
             if (livro == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro não encontrado!" });
 
@@ -191,7 +187,7 @@ namespace LivrariaMHS.Controllers
 
         private async Task VerificarAlteracoesCategorias(int livroID, int[] categoriasID)
         {
-            List<LivroCategoria> livrosCategorias = await _livroCategoriaServico.FindAsync(x => x.LivroID == livroID);
+            List<LivroCategoria> livrosCategorias = await _livroCategoriaServico.FindAllAsync(x => x.LivroID == livroID);
             
             foreach (var item in categoriasID)
             {
@@ -199,7 +195,7 @@ namespace LivrariaMHS.Controllers
                 if (!(livrosCategorias.Exists(x => x.CategoriaID == item)))
                 {
                     LivroCategoria novo = new LivroCategoria() { LivroID = livroID, CategoriaID = item };
-                    await _livroCategoriaServico.InsertAsync(novo);
+                    await _livroCategoriaServico.AddAsync(novo);
                 }
                 else
                     livrosCategorias.RemoveAll(x => x.CategoriaID == item);
@@ -216,7 +212,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro Inválido!" });
 
-            var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias", "LivrosCategorias.Categoria");
+            var livro = await _livroServico.FindFirstAsync(x => x.ID == id, "Autor", "LivrosCategorias", "LivrosCategorias.Categoria");
             if (livro == null)
                 return RedirectToAction(nameof(Error), new { message = "Livro não encontrado!" });
 
@@ -227,7 +223,7 @@ namespace LivrariaMHS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-           var livro = await _livroServico.FindByIdAsync(x => x.ID == id, "Autor", "LivrosCategorias");
+           var livro = await _livroServico.FindFirstAsync(x => x.ID == id, "Autor", "LivrosCategorias");
             try
             {
                 await _livroServico.RemoveAsync(livro);
@@ -275,7 +271,7 @@ namespace LivrariaMHS.Controllers
         public async Task<IActionResult> Pesquisar(string termo)
         {
             if (!string.IsNullOrEmpty(termo))
-                return PartialView("_indexPartial", (await _livroServico.FindAsync(x => x.Titulo.Contains(termo, StringComparison.OrdinalIgnoreCase) || x.Autor.Nome.Contains(termo, StringComparison.OrdinalIgnoreCase), "Autor")).OrderBy(x => x.Titulo));
+                return PartialView("_indexPartial", (await _livroServico.FindAllAsync(x => x.Titulo.Contains(termo, StringComparison.OrdinalIgnoreCase) || x.Autor.Nome.Contains(termo, StringComparison.OrdinalIgnoreCase), "Autor")).OrderBy(x => x.Titulo));
             else
                 return PartialView("_indexPartial", (await _livroServico.GetAllAsync("Autor")).OrderBy(x => x.Titulo));
         }

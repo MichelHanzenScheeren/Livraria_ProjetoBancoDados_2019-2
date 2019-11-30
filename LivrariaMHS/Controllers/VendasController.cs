@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using LivrariaMHS.Data.Repositories;
-using LivrariaMHS.Models;
-using LivrariaMHS.Models.Attributes;
-using LivrariaMHS.Models.ViewModels;
+using Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Model.Attributes;
+using Model.ViewModels;
 
 namespace LivrariaMHS.Controllers
 {
@@ -39,12 +38,12 @@ namespace LivrariaMHS.Controllers
             if (!string.IsNullOrEmpty(pesquisa))
             {
                 ViewData["pesquisa"] = pesquisa;
-                filtro = await _vendaServico.FindAsync(x => x.Livro.Titulo.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Livro.Autor.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Cliente.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Cliente.CPF.Contains(pesquisa), "Cliente", "Livro");
+                filtro = await _vendaServico.FindAllAsync(x => x.Livro.Titulo.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Livro.Autor.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Cliente.Nome.Contains(pesquisa, StringComparison.OrdinalIgnoreCase) || x.Cliente.CPF.Contains(pesquisa), "Cliente", "Livro");
             }
             if(data.HasValue)
             {
                 ViewData["date"] = data.Value.ToString("yyyy-MM-dd");
-                foreach (var item in await _vendaServico.FindAsync(x => x.Data.Date == data.Value.Date, "Cliente", "Livro"))
+                foreach (var item in await _vendaServico.FindAllAsync(x => x.Data.Date == data.Value.Date, "Cliente", "Livro"))
                 {
                     filtro.Add(item);
                 }
@@ -53,7 +52,6 @@ namespace LivrariaMHS.Controllers
                 filtro.OrderByDescending(x => x.Data);
 
             return View(filtro.Distinct().ToList());
-
         }
 
         public async Task<IActionResult> Create()
@@ -69,9 +67,9 @@ namespace LivrariaMHS.Controllers
             if (!ModelState.IsValid)
                 return View(new VendaViewModel() { Venda = venda, Livros = (await _livroServico.GetAllAsync()).OrderBy(x => x.Titulo).ToList(), Clientes = (await _clienteServico.GetAllAsync()).OrderBy(x => x.Nome).ToList() });
 
-            var livro = await _livroServico.FindByIdAsync(x => x.ID == venda.LivroID);
+            var livro = await _livroServico.FindFirstAsync(x => x.ID == venda.LivroID);
             venda.ValorUnitario = livro.Preco;
-            await _vendaServico.InsertAsync(venda);
+            await _vendaServico.AddAsync(venda);
             return RedirectToAction(nameof(Index));
         }
 
@@ -80,7 +78,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Venda Inválida!" });
 
-            var venda = await _vendaServico.FindByIdAsync(x => x.ID == id, "Livro", "Cliente");
+            var venda = await _vendaServico.FindFirstAsync(x => x.ID == id, "Livro", "Cliente");
 
             if (venda == null)
                 return RedirectToAction(nameof(Error), new { message = "Venda não encontrada!" });
@@ -93,7 +91,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Venda Inválida!" });
 
-            var venda = await _vendaServico.FindByIdAsync(x => x.ID == id, "Livro", "Cliente");
+            var venda = await _vendaServico.FindFirstAsync(x => x.ID == id, "Livro", "Cliente");
 
             if (venda == null)
                 return RedirectToAction(nameof(Error), new { message = "Venda não encontrada!" });
@@ -127,7 +125,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "ID Inválido!" });
 
-            var venda = await _vendaServico.FindByIdAsync(x => x.ID == id, "Livro", "Cliente");
+            var venda = await _vendaServico.FindFirstAsync(x => x.ID == id, "Livro", "Cliente");
 
             if (venda == null)
                 return RedirectToAction(nameof(Error), new { message = "Venda não encontrada!" });

@@ -19,7 +19,8 @@
 
 
   <ItemGroup>
-    <Folder Include="Queries\" />
+    <ProjectReference Include="..\Data\Data.csproj" />
+    <ProjectReference Include="..\Modelo\Model.csproj" />
   </ItemGroup>
 
 </Project>

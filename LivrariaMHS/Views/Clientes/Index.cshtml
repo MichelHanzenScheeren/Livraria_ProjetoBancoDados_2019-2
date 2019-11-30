@@ -10,7 +10,7 @@
         <h1>@ViewData["Title"]</h1>
         <div class="panel-heading">
             <form asp-action="Index" class="form form-inline">
-                <input onkeyup="ajaxTest();" class="form form-control float-left mr-sm-n5 col-4" type="text" name="pesquisa" id="pesquisa" placeholder="PESQUISAR CLIENTE" value=@ViewData["pesquisa"]>
+                <input onkeyup="ajaxTest();" class="form form-control float-left col-4 mr-sm-3 my-4" type="text" name="pesquisa" id="pesquisa" placeholder="PESQUISAR CLIENTE" value=@ViewData["pesquisa"]>
                 <a asp-action="Create" class="btn btn-facebook col-2">Novo</a>
             </form>
         </div>

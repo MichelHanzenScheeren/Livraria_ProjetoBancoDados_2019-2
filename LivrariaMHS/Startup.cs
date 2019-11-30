@@ -5,13 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using LivrariaMHS.Models;
 using System.Globalization;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Localization;
-using LivrariaMHS.Data;
-using System.Threading.Tasks;
-using LivrariaMHS.Data.Repositories;
+using Data.Repositories;
+using Data.Configurations;
 
 namespace LivrariaMHS
 {
@@ -36,9 +34,9 @@ namespace LivrariaMHS
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             string connectionString = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=LivrariaMHS;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            services.AddDbContext<LivrariaMHSContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<LivrariaMHSContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Data")));
 
-            services.AddScoped<ConfigDataBase>();
+            services.AddScoped<InitConfig>();
 
             services.AddScoped<ClienteRepository>();
             services.AddScoped<CidadeRepository>();
@@ -51,7 +49,7 @@ namespace LivrariaMHS
             services.AddScoped<VendaRepository>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ConfigDataBase configDataBase)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, InitConfig initConfig)
         {
             var brasil = new CultureInfo("pt-BR");
             var localizationOptions = new RequestLocalizationOptions
@@ -65,7 +63,7 @@ namespace LivrariaMHS
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                configDataBase.DataBaseInitializer();
+                initConfig.DataBaseInitializer();
             }
             else
             {

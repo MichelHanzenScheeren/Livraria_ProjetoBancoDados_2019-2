@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using LivrariaMHS.Data.Repositories;
-using LivrariaMHS.Models;
-using LivrariaMHS.Models.Attributes;
-using LivrariaMHS.Models.ViewModels;
+using Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Model.Attributes;
+using Model.ViewModels;
 
 namespace LivrariaMHS.Controllers
 {
@@ -43,7 +41,7 @@ namespace LivrariaMHS.Controllers
                 return View(categoria);
 
 
-            await _categoriaServico.InsertAsync(categoria);
+            await _categoriaServico.AddAsync(categoria);
             return RedirectToAction(nameof(Index));
         }
 
@@ -64,12 +62,12 @@ namespace LivrariaMHS.Controllers
             {
                 return RedirectToAction(nameof(Error), new { message = "Categoria Inválida!" });
             }
-            var categoria = await _categoriaServico.FindByIdAsync(x => x.ID == id);
+            var categoria = await _categoriaServico.FindFirstAsync(x => x.ID == id);
             if (categoria == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Categoria não encontrada!" });
             }
-            var livrosCategorias = await _livroCategoriaServico.FindAsync(x => x.CategoriaID == categoria.ID, "Livro", "Livro.Autor");
+            var livrosCategorias = await _livroCategoriaServico.FindAllAsync(x => x.CategoriaID == categoria.ID, "Livro", "Livro.Autor");
             return View(new CategoriaViewModel { Categoria = categoria, LivrosCategorias = livrosCategorias});
         }
 
@@ -78,7 +76,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Categoria Inválida!" });
 
-            var categoria = await _categoriaServico.FindByIdAsync(x => x.ID == id);
+            var categoria = await _categoriaServico.FindFirstAsync(x => x.ID == id);
 
             if (categoria == null)
                 return RedirectToAction(nameof(Error), new { message = "Categoria não encontrada!" });
@@ -129,7 +127,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "ID Inválido!" });
 
-            var categoria = await _categoriaServico.FindByIdAsync(x => x.ID == id);
+            var categoria = await _categoriaServico.FindFirstAsync(x => x.ID == id);
 
             if (categoria == null)
                 return RedirectToAction(nameof(Error), new { message = "Categoria não encontrada!" });

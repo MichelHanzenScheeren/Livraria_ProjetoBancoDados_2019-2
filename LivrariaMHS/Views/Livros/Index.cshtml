@@ -3,20 +3,22 @@
     ViewData["Title"] = "LIVROS";
 }
 
-<main role="main">
-    <hr />
-    <div class="container">
-        <h1>@ViewData["Title"]</h1>
-        <form asp-action="Index" class="form form-inline">
-            <input onkeyup="ajaxTest();" class="form form-control col-4 mr-sm-3" type="text" name="pesquisa" id="pesquisa" placeholder="BUSCAR LIVRO" value=@ViewData["pesquisa"]>
-            <a asp-action="Create" class="btn btn-facebook col-3-24 mr-sm-3"> Novo</a>
-            <a asp-action="Administrar" class="btn btn-success col-3-24">Preço</a>
-        </form>
-    </div><hr />
-    <div id="divLivros">
-        @{ await Html.RenderPartialAsync("_indexPartial", Model);}
-    </div>
-</main>
+    <main role="main">
+        <hr />
+        <div class="container">
+            <h1>@ViewData["Title"]</h1>
+            <form asp-action="Index" class="form form-inline">
+                <input onkeyup="ajaxTest();" class="form form-control col-4 mr-sm-3" type="text" name="pesquisa" id="pesquisa" placeholder="BUSCAR LIVRO" value=@ViewData["pesquisa"]>
+                <a asp-action="Create" class="btn btn-facebook col-3-24 mr-sm-3"> Novo</a>
+                <a asp-action="Administrar" class="btn btn-success col-3-24">Preço</a>
+            </form>
+        </div>
+        <hr />
+        <div id="divLivros">
+
+            @{ await Html.RenderPartialAsync("_indexPartial", Model);}
+        </div>
+    </main>
 
 @section Scripts {
     <script type="text/javascript">

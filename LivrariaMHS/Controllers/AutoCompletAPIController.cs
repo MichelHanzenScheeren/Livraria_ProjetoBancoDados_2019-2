@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
-using LivrariaMHS.Data.Repositories;
+using Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LivrariaMHS.Controllers
@@ -27,7 +25,7 @@ namespace LivrariaMHS.Controllers
             try
             {
                 string term = HttpContext.Request.Query["term"].ToString();
-                var names = (await _categoriaServico.FindAsync(p => p.Nome.Contains(term, StringComparison.OrdinalIgnoreCase))).Select(x => x.Nome).ToArray();
+                var names = (await _categoriaServico.FindAllAsync(p => p.Nome.Contains(term, StringComparison.OrdinalIgnoreCase))).Select(x => x.Nome).ToArray();
                 return Json(names);
             }
             catch
@@ -43,7 +41,7 @@ namespace LivrariaMHS.Controllers
             try
             {
                 string term = HttpContext.Request.Query["term"].ToString();
-                var names = (await _autorServico.FindAsync(p => p.Nome.Contains(term, StringComparison.OrdinalIgnoreCase))).Select(x => x.Nome).ToArray();
+                var names = (await _autorServico.FindAllAsync(p => p.Nome.Contains(term, StringComparison.OrdinalIgnoreCase))).Select(x => x.Nome).ToArray();
                 return Json(names);
             }
             catch

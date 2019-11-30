@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using LivrariaMHS.Models;
-using LivrariaMHS.Models.Attributes;
 using System.Diagnostics;
-using LivrariaMHS.Data.Repositories;
 using System.Linq;
+using Model.Attributes;
+using Model.ViewModels;
+using Data.Repositories;
 
 namespace LivrariaMHS.Controllers
 {
@@ -27,7 +27,7 @@ namespace LivrariaMHS.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _clienteServico.GetAllAsync());
+            return View((await _clienteServico.GetAllAsync()).OrderBy(x => x.Nome));
         }
 
         public IActionResult Create()
@@ -45,7 +45,7 @@ namespace LivrariaMHS.Controllers
 
             await VerificarEndereco(cliente);
 
-            await _clienteServico.InsertAsync(cliente);
+            await _clienteServico.AddAsync(cliente);
             TempData["Concluido"] = "Cliente Cadastrado!";
             return RedirectToAction(nameof(Index));
         }
@@ -55,7 +55,7 @@ namespace LivrariaMHS.Controllers
             var rua = await _ruaServico.FindFirstAsync(x => x.Nome == cliente.Rua.Nome);
             if (rua == null)
             {
-                await _ruaServico.InsertAsync(cliente.Rua);
+                await _ruaServico.AddAsync(cliente.Rua);
                 cliente.RuaID = (await _ruaServico.LastAsync()).ID;
             }
             else
@@ -64,7 +64,7 @@ namespace LivrariaMHS.Controllers
             var bairro = await _bairroServico.FindFirstAsync(x => x.Nome == cliente.Bairro.Nome);
             if (bairro == null)
             {
-                await _bairroServico.InsertAsync(cliente.Bairro);
+                await _bairroServico.AddAsync(cliente.Bairro);
                 cliente.BairroID = (await _bairroServico.LastAsync()).ID;
             }
             else
@@ -73,7 +73,7 @@ namespace LivrariaMHS.Controllers
             var cidade = await _cidadeServico.FindFirstAsync(x => x.Nome == cliente.Cidade.Nome && x.Estado == cliente.Cidade.Estado);
             if (cidade == null)
             {
-                await _cidadeServico.InsertAsync(cliente.Cidade);
+                await _cidadeServico.AddAsync(cliente.Cidade);
                 cliente.CidadeID = (await _cidadeServico.LastAsync()).ID;
             }
             else
@@ -85,7 +85,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Cliente Inválido!" });
 
-            var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
+            var cliente = await _clienteServico.FindFirstAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
 
             if (cliente == null)
                 return RedirectToAction(nameof(Error), new { message = "Cliente não encontrado!" });
@@ -98,7 +98,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Cliente Inválido!" });
 
-            var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
+            var cliente = await _clienteServico.FindFirstAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
 
             if (cliente == null)
                 return RedirectToAction(nameof(Error), new { message = "Cliente não encontrado!" });
@@ -133,7 +133,7 @@ namespace LivrariaMHS.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "ID Inválido!" });
 
-            var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
+            var cliente = await _clienteServico.FindFirstAsync(x => x.ID == id, "Bairro", "Cidade", "Rua");
             if (cliente == null)
                 return RedirectToAction(nameof(Error), new { message = "Cliente não encontrado!" });
 
@@ -144,7 +144,7 @@ namespace LivrariaMHS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cliente = await _clienteServico.FindByIdAsync(x => x.ID == id, "Rua", "Cidade", "Bairro");
+            var cliente = await _clienteServico.FindFirstAsync(x => x.ID == id, "Rua", "Cidade", "Bairro");
             await _clienteServico.RemoveAsync(cliente);
             TempData["Concluido"] = "Cadastro Apagado!";
             return RedirectToAction(nameof(Index));
@@ -166,7 +166,7 @@ namespace LivrariaMHS.Controllers
         public async Task<IActionResult> PesquisarClientes(string termo)
         {
             if (!string.IsNullOrEmpty(termo))
-                return PartialView("_clientPartial", (await _clienteServico.FindAsync(x => x.Nome.Contains(termo, StringComparison.OrdinalIgnoreCase) || x.CPF.Contains(termo, StringComparison.OrdinalIgnoreCase))).OrderBy(x => x.Nome));
+                return PartialView("_clientPartial", (await _clienteServico.FindAllAsync(x => x.Nome.Contains(termo, StringComparison.OrdinalIgnoreCase) || x.CPF.Contains(termo, StringComparison.OrdinalIgnoreCase))).OrderBy(x => x.Nome));
             else
                 return PartialView("_clientPartial", (await _clienteServico.GetAllAsync()).OrderBy(x => x.Nome));
         }
