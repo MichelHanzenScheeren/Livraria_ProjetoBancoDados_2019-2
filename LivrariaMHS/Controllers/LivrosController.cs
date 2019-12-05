@@ -54,18 +54,31 @@ namespace LivrariaMHS.Controllers
                 ModelState.AddModelError("livro.LivrosCategorias", "Informe pelo menos uma categoria!");
                 return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync() } );
             }
+            if(imagem != null)
+            {
+                if (imagem.ContentType != "image/jpeg")
+                {
+                    TempData["CustomError"] = "O arquivo informado é inválido!";
+                    ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
+                    return View(new LivroViewModel { Livro = livro, Categorias = await _categoriaServico.GetAllAsync() });
+                }
+            }
             await VerificarCadastroAutor(livro);
             ConfigurarImagem(livro, imagem);
             await _livroServico.AddAsync(livro);
+            await CadastarCategorias((await _livroServico.LastAsync()).ID, categoriasID);
+            
             TempData["Concluido"] = "Livro Cadastrado!";
+            return RedirectToAction(nameof(Index));
+        }
 
-            int idLivro = (await _livroServico.LastAsync()).ID;
+        private async Task CadastarCategorias(int idLivro, int[] categoriasID)
+        {
             foreach (var item in categoriasID)
             {
                 LivroCategoria livroCategoria = new LivroCategoria() { LivroID = idLivro, CategoriaID = item };
                 await _livroCategoriaServico.AddAsync(livroCategoria);
             }
-            return RedirectToAction(nameof(Index));
         }
 
         private void ConfigurarImagem(Livro livro, IFormFile imagem)
@@ -97,7 +110,7 @@ namespace LivrariaMHS.Controllers
                 livro.ContentType = imagem.ContentType;
                 livro.Dados = mat.ToBytes();
             }
-            
+            ms.Dispose();
         }
 
         public async Task<FileContentResult> GetFoto(int id)
@@ -165,16 +178,29 @@ namespace LivrariaMHS.Controllers
                 TempData["CustomError"] = "Informe pelo menos uma categoria!";
                 ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
                 var categorias = await _categoriaServico.GetAllAsync();
-                ViewBag.categorias = new MultiSelectList(categorias, "ID", "Nome");
+                ViewBag.categorias = new MultiSelectList(categorias, "ID", "Nome", categoriasID);
                 livro.AutorID = Convert.ToInt32(Request.Form["autorAntigoID"]);
                 return View(new LivroViewModel { Livro = livro, Categorias = categorias });
+            }
+            if (imagem != null)
+            {
+                if (imagem.ContentType != "image/jpeg")
+                {
+                    TempData["CustomError"] = "O arquivo informado é inválido!";
+                    ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
+                    var categorias = await _categoriaServico.GetAllAsync();
+                    ViewBag.categorias = new MultiSelectList(categorias, "ID", "Nome", categoriasID);
+                    livro.AutorID = Convert.ToInt32(Request.Form["autorAntigoID"]);
+                    return View(new LivroViewModel { Livro = livro, Categorias = categorias });
+                }
             }
 
             try
             {
                 await VerificarAlteracoesCategorias(id, categoriasID);
                 await VerificarCadastroAutor(livro);
-                ConfigurarImagem(livro, imagem);
+                if(imagem != null)
+                    ConfigurarImagem(livro, imagem);
                 await _livroServico.UpdateAsync(livro);
                 TempData["Concluido"] = "Livro Editado!";
                 return RedirectToAction(nameof(Index));
@@ -191,7 +217,6 @@ namespace LivrariaMHS.Controllers
             
             foreach (var item in categoriasID)
             {
-                
                 if (!(livrosCategorias.Exists(x => x.CategoriaID == item)))
                 {
                     LivroCategoria novo = new LivroCategoria() { LivroID = livroID, CategoriaID = item };

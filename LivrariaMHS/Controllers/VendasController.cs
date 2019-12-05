@@ -157,16 +157,16 @@ namespace LivrariaMHS.Controllers
             if (tipo == "media")
             {
                 var resultado = _vendaServico.ValorMedioDasVendas(dataInicio, dataFim);
-                if (resultado == null)
-                    ViewData["resultado"] = 0;
+                if (resultado == "")
+                    ViewData["resultado"] = "Nenhuma venda foi realizada nesse período...";
                 else
                     ViewData["resultado"] = resultado;
             }
             else
             {
                 var resultado = _vendaServico.ValorTotalDasVendas(dataInicio, dataFim);
-                if (resultado == null)
-                    ViewData["resultado"] = 0;
+                if (resultado == "")
+                    ViewData["resultado"] = "Nenhuma venda foi realizada nesse período...";
                 else
                     ViewData["resultado"] = resultado;
             }

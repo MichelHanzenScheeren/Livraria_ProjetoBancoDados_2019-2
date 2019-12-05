@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Data.Migrations
+namespace LivrariaMHS.Migrations
 {
-    public partial class CreateDataBase : Migration
+    public partial class CiacaoBanco : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

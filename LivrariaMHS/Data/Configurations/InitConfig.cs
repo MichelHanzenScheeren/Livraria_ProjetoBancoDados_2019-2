@@ -24,32 +24,37 @@ namespace Data.Configurations
             _context.Database.ExecuteSqlCommand(
                 "CREATE OR ALTER TRIGGER ValidarExistenciaAutor " +
                 "ON dbo.livros AFTER UPDATE, DELETE AS " +
+                "BEGIN " +
                     "DECLARE @IdAutorLivroApagado INT " +
-                    "SELECT @IdAutorLivroApagado = AutorID FROM deleted " +
-                    "DELETE FROM AUTORES " +
-                        "WHERE(SELECT COUNT(*) FROM LIVROS WHERE AutorID = @IdAutorLivroApagado) = 0 " +
-                        "AND ID = @IdAutorLivroApagado"
+                    "SELECT @IdAutorLivroApagado = AutorID FROM DELETED " +
+                    "IF(SELECT COUNT(*) FROM livros WHERE AutorID = @IdAutorLivroApagado) = 0 " +
+                        "DELETE FROM AUTORES WHERE ID = @IdAutorLivroApagado " +
+                "END"
             );
 
             //Trigger para Verificar se algo do endereço do cliente deve ser apagado (se não possuir entidade associada)
             _context.Database.ExecuteSqlCommand(
                 "CREATE OR ALTER TRIGGER ValidarExistenciaEnderecos " +
-                "ON dbo.clientes AFTER UPDATE, DELETE AS " +
-                    "DECLARE @IdCidadeAntiga INT " +
-                    "DECLARE @IdRuaAntiga INT " +
-                    "DECLARE @IdBairroAntigo INT " +
-                    "SELECT @IdCidadeAntiga = CidadeID FROM DELETED " +
-                    "SELECT @IdRuaAntiga = RuaID FROM DELETED " +
-                    "SELECT @IdBairroAntigo = BairroID FROM DELETED " +
-                    "DELETE FROM Cidades " +
-                        "WHERE(SELECT COUNT(*) FROM CLIENTES WHERE CidadeID = @IdCidadeAntiga) = 0 " +
-                        "AND ID = @IdCidadeAntiga " +
-                    "DELETE FROM Ruas " +
-                        "WHERE(SELECT COUNT(*) FROM CLIENTES WHERE RuaID = @IdRuaAntiga) = 0 " +
-                        "AND ID = @IdRuaAntiga " +
-                    "DELETE FROM Bairros " +
-                        "WHERE(SELECT COUNT(*) FROM CLIENTES WHERE BairroID = @IdBairroAntigo) = 0 " +
-                        "AND ID = @IdBairroAntigo"
+                "ON DBO.Clientes AFTER UPDATE, DELETE AS " +
+                "BEGIN " +
+                    "DECLARE " +
+                        "@IdCidadeAntiga INT, " +
+                        "@IdRuaAntiga INT, " +
+                        "@IdBairroAntigo INT " +
+                    "SELECT " +
+                        "@IdCidadeAntiga = CidadeID, " +
+                        "@IdRuaAntiga = RuaID, " +
+                        "@IdBairroAntigo = BairroID FROM DELETED " +
+
+                    "IF(SELECT COUNT(*) FROM Clientes WHERE CidadeID = @IdCidadeAntiga) = 0 " +
+                        "DELETE FROM Cidades WHERE ID = @IdCidadeAntiga " +
+
+                    "IF(SELECT COUNT(*) FROM Clientes WHERE RuaID = @IdRuaAntiga) = 0 " +
+                        "DELETE FROM Ruas WHERE ID = @IdRuaAntiga " +
+
+                    "IF(SELECT COUNT(*) FROM Clientes WHERE BairroID = @IdBairroAntigo) = 0 " +
+                        "DELETE FROM Bairros WHERE ID = @IdBairroAntigo " +
+                "END "
             );
         }
 
@@ -58,13 +63,15 @@ namespace Data.Configurations
         {
             //Procedure sem retorno que incrementa ou diminui o preço de todos os livros de acordo com uma porcentagem informada
             _context.Database.ExecuteSqlCommand(
-                "CREATE OR ALTER PROCEDURE AlterPrecoLivros @PORCENTAGEM DECIMAL(18, 2), @TIPO CHAR(1) AS " +
+                "CREATE OR ALTER PROCEDURE AlterPrecoLivros " +
+                "(@PORCENTAGEM DECIMAL(18, 2), @TIPO CHAR(1)) AS " +
+                "BEGIN " +
                     "IF(@TIPO = '+') " +
-                        "BEGIN UPDATE LIVROS SET PRECO = ((1 + (@PORCENTAGEM / 100)) * PRECO) END " +
-                    "IF(@TIPO = '-') " +
-                        "BEGIN UPDATE LIVROS SET PRECO = ((1 - (@PORCENTAGEM / 100)) * PRECO) END"
+                        "UPDATE LIVROS SET PRECO = ((1 + (@PORCENTAGEM / 100)) * PRECO) " +
+                    "ELSE IF(@TIPO = '-') " +
+                        "UPDATE LIVROS SET PRECO = ((1 - (@PORCENTAGEM / 100)) * PRECO) " +
+                "END "
             );
-
         }
 
         public void CriarFunctions()
@@ -75,9 +82,9 @@ namespace Data.Configurations
                 "AS RETURN ( " +
                     "SELECT CONVERT(DECIMAL(10, 2), AVG(Quantidade * ValorUnitario)) AS MEDIA " +
                     "FROM Vendas " +
-                    "WHERE convert(CHAR, CAST(Data AS DATE), 103) " +
-                    "BETWEEN convert(CHAR, @DataInicial, 103) " +
-                    "AND convert(CHAR, @DataFinal, 103) " +
+                    "WHERE CAST(Data AS DATE) " +
+                    "BETWEEN CAST(@DataInicial AS DATE) " +
+                    "AND CAST(@DataFinal AS DATE) " +
                 ")"
             );
 
@@ -87,9 +94,9 @@ namespace Data.Configurations
                 "AS RETURN ( " +
                     "SELECT CONVERT(DECIMAL(10,2), SUM(Quantidade * ValorUnitario)) AS TOTAL " +
                     "FROM Vendas " +
-                    "WHERE convert(CHAR, CAST(Data AS DATE), 103) " +
-                    "BETWEEN convert(CHAR,@DataInicial, 103) " +
-                    "AND convert(CHAR, @DataFinal, 103) " +
+                    "WHERE CAST(Data AS DATE) " +
+                    "BETWEEN CAST(@DataInicial AS DATE) " +
+                    "AND CAST(@DataFinal AS DATE) " +
                     ")"
             );
         }

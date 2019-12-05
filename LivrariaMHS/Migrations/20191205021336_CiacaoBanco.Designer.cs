@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Data.Migrations
+namespace LivrariaMHS.Migrations
 {
     [DbContext(typeof(LivrariaMHSContext))]
-    [Migration("20191130191851_CreateDataBase")]
-    partial class CreateDataBase
+    [Migration("20191205021336_CiacaoBanco")]
+    partial class CiacaoBanco
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

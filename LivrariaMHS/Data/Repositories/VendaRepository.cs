@@ -42,6 +42,7 @@ namespace Data.Repositories
                 var connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString);
                 try
                 {
+                    string init = inicio.ToShortDateString();
                     connection.Open();
                     var command = connection.CreateCommand();
                     command.CommandType = CommandType.Text;

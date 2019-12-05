@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Data.Migrations
+namespace LivrariaMHS.Migrations
 {
     [DbContext(typeof(LivrariaMHSContext))]
     partial class LivrariaMHSContextModelSnapshot : ModelSnapshot
