@@ -69,5 +69,3 @@ GO
 			AND CAST(@DataFinal AS DATE)
 	)
 GO
-SELECT * from ValorTotalDasVendas(01/10/2019, 01/12,2019);
-select CAST(Data AS date) from vendas;
