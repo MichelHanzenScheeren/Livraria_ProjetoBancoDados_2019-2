@@ -1,5 +1,5 @@
-# APLICATIVO SIMPLIFICADO VOLTADO A UMA LIVRARIA
-Projeto produzido na disciplina de Fundamentos de Banco de Dados no ano de 2019/2 - 4º Semestre do Curso de Ciência da Computação, da Universidade Tecnológica Federal do Paraná - UTFPR Medianeira.
+# APLICATIVO SIMPLIFICADO DE UMA LIVRARIA
+Projeto produzido para a disciplina de Fundamentos de Banco de Dados no ano de 2019/2 - 4º Semestre do Curso de Ciência da Computação, da Universidade Tecnológica Federal do Paraná - UTFPR Medianeira.
 O aplicativo foi desenvolvido em C# utilizando o Visual Studio Community 2019 (v16.3.9). Para o banco de dados, foi utilizadoo Entity Framework Core v2.2.6 com integração ao SQL Server.
 
 # Instalação da Aplicação
